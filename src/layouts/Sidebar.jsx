@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Home, User, Settings, LogOut, UserPlus } from "lucide-react";
+import { Home, User, Settings, LogOut, UserPlus, Menu , X } from "lucide-react";
 import { Link, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Registrationform from "../components/Registrationform";
+import HomeP from '../admin/Home'
+import Profile from "../admin/Profile"
 
 // Example extra pages
-const HomePage = () => <h1 className="p-6 text-2xl">🏠 Home Page</h1>;
-const ProfilePage = () => <h1 className="p-6 text-2xl">👤 Profile Page</h1>;
+const HomePage = () => <h1 className="p-6 text-2xl"><HomeP/></h1>;
+const ProfilePage = () => <h1 className="p-6 text-2xl"><Profile/></h1>;
 const SettingsPage = () => <h1 className="p-6 text-2xl">⚙️ Settings Page</h1>;
 
 const Sidebar = () => {
@@ -30,32 +32,35 @@ const Sidebar = () => {
       <div
         className={`${
           isOpen ? "w-60" : "w-20"
-        } h-screen bg-gray-900 text-white transition-all duration-300 p-4 flex flex-col justify-between`}
+        } h-screen bg-gray-50 text-black transition-all duration-300 p-4 flex flex-col justify-between`}
       >
         {/* Top Section */}
         <div>
-          {/* Toggle Button */}
-          <button
-            className="text-white mb-6"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? "<<" : ">>"}
-          </button>
-
+          <div className="flex">
+          
           {/* Sidebar Heading */}
           {isOpen && (
             <h2 className="text-xl font-bold mb-6 text-center">
-              Admin Dashboard
+             Softgrowth
             </h2>
           )}
+            {/* Toggle Button */}
+          <button
+            className="text-black mb-6 ml-auto"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <Menu /> : <X />}
+          </button>
+
+          </div>
 
           {/* Menu Items */}
           <ul className="space-y-4">
             {menuItems.map((item, index) => (
-              <li key={index}>
+              <li className="" key={index}>
                 <Link
                   to={item.link}
-                  className="flex items-center gap-3 cursor-pointer hover:bg-gray-700 p-2 rounded-lg"
+                  className="flex items-center gap-3 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
                 >
                   {item.icon}
                   {isOpen && <span>{item.name}</span>}

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./layouts/Sidebar";        // Admin Sidebar
+import Header from "./layouts/Header";        // Admin Header
 import InternSidebar from "./pages/InternSidebar"; // Intern Sidebar
 import LoginPage from "./pages/LoginPage";        // Login Page
 import InternDashboard from "./pages/InternDashboard"; // Example Intern Page
@@ -39,7 +40,9 @@ function App() {
               <div className="flex">
                 <InternSidebar />
                 <div className="flex-1">
+                  
                   <Routes>
+                    <Header />
                     <Route path="dashboard" element={<InternDashboard />} />
                     {/* You can add more intern pages here */}
                   </Routes>
