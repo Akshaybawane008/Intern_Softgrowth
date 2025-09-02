@@ -1,7 +1,6 @@
 import express from "express"
 import bodyParser from "express";
-import mongoose from "mongoose";
-import useRouter from "./Routes/user.js"
+
 import cors from "cors"
 const app = express()
 app.use(cors({
