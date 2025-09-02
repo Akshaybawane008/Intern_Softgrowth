@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Home, User, Settings, LogOut, UserPlus, Menu , X } from "lucide-react";
+import { Home, User, Settings, LogOut, UserPlus, Menu , X, TextSearch } from "lucide-react";
 import { Link, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Registrationform from "../components/Registrationform";
 import HomeP from '../admin/Home'
 import Profile from "../admin/Profile"
+import Records from "../components/Records";
 
 // Example extra pages
 const HomePage = () => <h1 className="p-6 text-2xl"><HomeP/></h1>;
@@ -24,6 +25,8 @@ const Sidebar = () => {
     { name: "Profile", icon: <User size={20} />, link: "/admin/profile" },
     { name: "Registration", icon: <UserPlus size={20} />, link: "/admin/registration" },
     { name: "Settings", icon: <Settings size={20} />, link: "/admin/settings" },
+    { name: "Records", icon: <TextSearch size={20}/>, link: "/admin/records" },
+    
   ];
 
   return (
@@ -91,6 +94,7 @@ const Sidebar = () => {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="registration" element={<Registrationform />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="records" element={<Records />} />
         </Routes>
       </div>
     </div>
