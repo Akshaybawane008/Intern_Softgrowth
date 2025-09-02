@@ -12,20 +12,9 @@ app.use(cors({
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json());
-//   server port number
-const port = 4000;
 
-// mongodb database connection
-mongoose.connect("mongodb+srv://jrsahil24:ECG7sbLpbFnWigbv@cluster0.1rd532c.mongodb.net/",
-    { dbName: "intern_Task_management" }
-).then(() => console.log("mongo db connected successfully")).catch((error) => console.log(error = error.message));
+// Routes
+app.use("/api/user", userRouters);
 
-app.use("/api/user/",useRouter);
-
-app.get("/", (req, res) => {
-    res.end("hello sahil")
-})
-
-
-
-app.listen(port, () => console.log(`server is listening on port ${port}`))
+// Start server
+app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
