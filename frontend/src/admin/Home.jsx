@@ -5,7 +5,9 @@ const Home = () => {
   return (
     <div>
         <Header/>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, quisquam quam, libero recusandae necessitatibus, enim est ut aliquid voluptatibus sint omnis adipisci ea eius? Doloribus, fugit. Vero optio blanditiis enim?
+      <div className='p-6'>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, quisquam quam, libero recusandae necessitatibus, enim est ut aliquid voluptatibus sint omnis adipisci ea eius? Doloribus, fugit. Vero optio blanditiis enim?
+      </div>
     </div>
   )
 }
