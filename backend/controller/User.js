@@ -4,63 +4,86 @@ import crypto from "crypto";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
-// Generate random password with first_name prefix
+// Generate random password with name prefix
 function makeRandomPassword(firstName) {
     const randomStr = crypto.randomBytes(3).toString("hex"); // 6-char random
     return `${firstName}${randomStr}`;
 }
 
 // routes
+// post method
 // /api/user/register
 
 export const registerUser = async (req, res) => {
     const {
-        first_name,
-        middle_name,
-        last_name,
-        mobile_no,
-        email_id,
-        date_of_birth,
-        collage_name,
-        start_date,
-        end_date,
+        //      name: "",
+        // middleName: "",
+        // lastName: "",
+        // mobile: "",
+        // email: "",
+        // dob: "",
+        // college: "",
+        // durationStart: "",
+        // durationEnd: "",
+        // address: "",
+        // aadhar: "",
+        name,
+        middleName,
+        lastName,
+        mobile,
+        email,
+        dob,
+        college,
+        durationStart,
+        durationEnd,
         address,
-        adhar_no
+        aadhar
     } = req.body;
 
     // Validation
     if (
-        !first_name || !middle_name || !last_name ||
-        !mobile_no || !email_id || !date_of_birth ||
-        !collage_name || !start_date || !end_date ||
-        !address || !adhar_no
-    ) {
-        return res.status(400).json({ message: "All fields are required", success: false });
-    }
+        !name || !middleName || !lastName ||
+        !mobile || !email || !dob ||
+        !college || !durationStart || !durationEnd ||
+        !address || !aadhar
+    ) return res.status(400).json({ message: "All fields are required", success: "false" });
+
+
+    let checkuser = await User.findOne({
+        $or: [
+            { mobile: mobile },
+            { aadhar: aadhar },
+            { email: email }
+        ]
+    });
+
+    if (checkuser) return res.json({ message: "user already exists", success: "false" })
+
 
     try {
 
         // 1. Generate password
-        const password = makeRandomPassword(first_name);
+        const password = makeRandomPassword(name);
 
         // 2. Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // 3. Save user with hashed password
         const user = await User.create({
-            first_name,
-            middle_name,
-            last_name,
-            mobile_no,
-            email_id,
-            date_of_birth,
-            collage_name,
-            start_date,
-            end_date,
+            name,
+            middleName,
+            lastName,
+            mobile,
+            email,
+            dob,
+            college,
+            durationStart,
+            durationEnd,
             address,
-            adhar_no,
+            aadhar,
             password: hashedPassword
         });
+
 
         // 4. Setup email transporter
         const transporter = nodemailer.createTransport({
@@ -74,9 +97,9 @@ export const registerUser = async (req, res) => {
         // 5. Send email to the registered intern
         const mailOptions = {
             from: "jrsahil24@gmail.com",
-            to: email_id,  // <-- dynamic: intern's registered email
+            to: email,  // <-- dynamic: intern's registered email
             subject: "Your Internship Account Credentials",
-            text: `Hello ${first_name},\n\nYour internship account has been created successfully.\n\nUsername: ${email_id}\nPassword: ${password}\n\nPlease login and change your password immediately.`
+            text: `Hello ${name},\n\nYour internship account has been created successfully.\n\nUsername: ${email}\nPassword: ${password}\n\nPlease login and change your password immediately.`
         };
 
         await transporter.sendMail(mailOptions);
@@ -87,8 +110,8 @@ export const registerUser = async (req, res) => {
             success: true,
             user: {
                 id: user._id,
-                email: user.email_id,
-                name: `${user.first_name} ${user.last_name}`
+                email: user.email,
+                name: `${user.name} ${user.lastName}`
             }
         });
 
@@ -97,22 +120,48 @@ export const registerUser = async (req, res) => {
     }
 };
 
+//routes
+//get method 
+// api/user/
+export const getAllUser = async (req, res) => {
+    let users = await User.find()
+
+
+    if (!users) return res.json({ message: "no users exist", success: "false" })
+    res.json(users)
+}
+// api/user/:id
+export const updateUser = async (req, res) => {
+    let id = req.params.id
+
+
+    let user = await User.findOne({ _id: id, })
+    console.log(user)
+
+    if (!users) return res.json({ message: "no user exist", success: "false" })
+    res.json(users)
+}
 
 // Routes
+// post method
 // /api/user/login
 export const loginUser = async (req, res) => {
 
-    let { email_id, password } = req.body;
-    if (!email_id || !password) return res.json({ message: "email and password required", success: "false" })
-    let user = await User.findOne({ email_id })
+    let { email, password } = req.body;
+    if (!email || !password) return res.json({ message: "email and password required", success: "false" })
+    let user = await User.findOne({ email })
     if (!user) return res.json({ message: "user doesnot exist", success: false })
 
     let valid = await bcrypt.compare(password, user.password)
     if (!valid) return res.json({ message: "invalid password", success: false })
-    let token = jwt.sign({user:user._id},"$%%^%#$#",{
-expiresIn:"1d"})
-    res.json({ message: `hello ${user.first_name} you successfully log in`, success: true,token })
+    let token = jwt.sign({ user: user._id }, "$%%^%#$#", {
+        expiresIn: "1d"
+    })
+    res.json({ message: `hello ${user.name} you successfully log in`, success: true, token })
 
 
 
 }
+
+
+
