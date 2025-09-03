@@ -4,111 +4,30 @@ const Records = () => {
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 5; // 5 record show
+  const [recordsPerPage, setRecordsPerPage] = useState(5); // 5 record show
 
   // Fetch data from backend API
-  // useEffect(() => {
-  //   const fetchRecords = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:5000/api/registration"); // backend API
-  //       const data = await response.json();
-  //       setRecords(data);
-  //     } catch (error) {
-  //       console.error("Error fetching records:", error);
-  //     }
-  //   };
-
-  //   fetchRecords();
-  // }, []);
-
-
-  // Dummy data input
   useEffect(() => {
-    
-    const dummyData = [
-      {
-        name: "Neil",
-        middleName: "ff",
-        lastName: "fgm",
-        mobile: "9876543210",
-        email: "test@example.com",
-        dob: "2000-01-01",
-        college: "ABC College",
-        durationStart: "2025-01-01",
-        durationEnd: "2025-06-01",
-        address: "Pune, India",
-        aadhar: "1234-5678-9012",
-      },
-      {
-        name: "Neil",
-        middleName: "ff",
-        lastName: "fgm",
-        mobile: "9876543210",
-        email: "test@example.com",
-        dob: "2000-01-01",
-        college: "ABC College",
-        durationStart: "2025-01-01",
-        durationEnd: "2025-06-01",
-        address: "Pune, India",
-        aadhar: "1234-5678-9012",
-      },{
-        name: "Neil",
-        middleName: "ff",
-        lastName: "fgm",
-        mobile: "9876543210",
-        email: "test@example.com",
-        dob: "2000-01-01",
-        college: "ABC College",
-        durationStart: "2025-01-01",
-        durationEnd: "2025-06-01",
-        address: "Pune, India",
-        aadhar: "1234-5678-9012",
-      },{
-        name: "Neil",
-        middleName: "ff",
-        lastName: "fgm",
-        mobile: "9876543210",
-        email: "test@example.com",
-        dob: "2000-01-01",
-        college: "ABC College",
-        durationStart: "2025-01-01",
-        durationEnd: "2025-06-01",
-        address: "Pune, India",
-        aadhar: "1234-5678-9012",
-      },{
-        name: "Neil",
-        middleName: "ff",
-        lastName: "fgm",
-        mobile: "9876543210",
-        email: "test@example.com",
-        dob: "2000-01-01",
-        college: "ABC College",
-        durationStart: "2025-01-01",
-        durationEnd: "2025-06-01",
-        address: "Pune, India",
-        aadhar: "1234-5678-9012",
-      },{
-        name: "Neil",
-        middleName: "ff",
-        lastName: "fgm",
-        mobile: "9876543210",
-        email: "test@example.com",
-        dob: "2000-01-01",
-        college: "ABC College",
-        durationStart: "2025-01-01",
-        durationEnd: "2025-06-01",
-        address: "Pune, India",
-        aadhar: "1234-5678-9012",
-      },
+    const fetchRecords = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/registration"); // backend API
+        const data = await response.json();
+        setRecords(data);
+      } catch (error) {
+        console.error("Error fetching records:", error);
+      }
+    };
 
-    ];
-    setRecords(dummyData);
+    fetchRecords();
   }, []);
 
+  
+   
   // Search code
 
   const filteredRecords = records.filter((rec) => {
-    const fullName = `${rec.name} ${rec.middleName} ${rec.lastName}`.toLowerCase();
+    const fullName =
+      `${rec.name} ${rec.middleName} ${rec.lastName}`.toLowerCase();
     return (
       fullName.includes(searchTerm.toLowerCase()) ||
       rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -119,27 +38,47 @@ const Records = () => {
   // table list code
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = filteredRecords.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-6xl">
         <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
+        <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
+          <input
+            type="text"
+            placeholder="Search by name, email, or mobile..."
+            className="border p-2 rounded-lg w-100 mb-4"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); 
+            }}
+          />
 
-        
-        <input
-          type="text"
-          placeholder="Search by name, email, or mobile..."
-          className="border p-2 rounded-lg w-100 mb-4"
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // reset to first page when searching
-          }}
-        />
+          <div className="flex justify-end mb-3">
+            <label className="mr-2 font-medium mt-2">Rows per page:</label>
+            <select
+              value={recordsPerPage}
+              onChange={(e) => {
+                setRecordsPerPage(Number(e.target.value));
+                setCurrentPage(1); 
+              }}
+              className="border p-2 rounded-lg"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+              <option value={25}>25</option>
+            </select>
+          </div>
+        </div>
 
-       
         {currentRecords.length === 0 ? (
           <p className="text-center text-gray-600">No records found.</p>
         ) : (
@@ -154,6 +93,7 @@ const Records = () => {
                 <th className="border p-2">Duration</th>
                 <th className="border p-2">Aadhar No.</th>
                 <th className="border p-2">Address</th>
+                <th className="border p-2">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -171,13 +111,34 @@ const Records = () => {
                   </td>
                   <td className="border p-2">{rec.aadhar}</td>
                   <td className="border p-2">{rec.address}</td>
+                  <td className="border p-2">
+                    {" "}
+                    <button
+                      onClick={() =>
+                        alert(`Details of ${rec.name} ${rec.lastName}`)
+                      }
+                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
+                     text-sm font-medium text-gray-900 rounded-lg group 
+                     bg-gradient-to-br from-cyan-500 to-blue-500 
+                     group-hover:from-cyan-500 group-hover:to-blue-500 
+                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
+                     focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                    >
+                      <span
+                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
+                           bg-white dark:bg-gray-900 rounded-md 
+                           group-hover:bg-transparent group-hover:dark:bg-transparent"
+                      >
+                        View
+                      </span>
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
 
-        
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-4 space-x-2">
             <button
@@ -193,7 +154,9 @@ const Records = () => {
                 key={i + 1}
                 onClick={() => setCurrentPage(i + 1)}
                 className={`px-3 py-1 border rounded-lg ${
-                  currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-100"
+                  currentPage === i + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100"
                 }`}
               >
                 {i + 1}
@@ -201,7 +164,9 @@ const Records = () => {
             ))}
 
             <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
               className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
             >
