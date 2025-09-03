@@ -21,7 +21,6 @@ const Records = () => {
   //   fetchRecords();
   // }, []);
 
-
   // Dummy data input
   useEffect(() => {
     
@@ -211,6 +210,7 @@ const Records = () => {
         )}
       </div>
     </div>
+
   );
 };
 
