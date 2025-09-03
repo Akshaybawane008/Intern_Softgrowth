@@ -7,16 +7,17 @@ const Records = () => {
   const recordsPerPage = 5; // 5 record show
 
   // Fetch data from backend API
-  // useEffect(() => {
-  //   const fetchRecords = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:5000/api/registration"); // backend API
-  //       const data = await response.json();
-  //       setRecords(data);
-  //     } catch (error) {
-  //       console.error("Error fetching records:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/user/"); // backend API
+        const data = await response.json();
+        console.log("userData = ", data);
+        setRecords(data);
+      } catch (error) {
+        console.error("Error fetching records:", error);
+      }
+    };
 
   //   fetchRecords();
   // }, []);
@@ -108,11 +109,14 @@ const Records = () => {
   // Search code
 
   const filteredRecords = records.filter((rec) => {
-    const fullName = `${rec.name} ${rec.middleName} ${rec.lastName}`.toLowerCase();
+    const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
+      rec.lastName || ""
+    }`.toLowerCase();
+
     return (
       fullName.includes(searchTerm.toLowerCase()) ||
       rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rec.mobile?.includes(searchTerm)
+      rec.mobile?.toString().includes(searchTerm)
     );
   });
 
@@ -124,20 +128,38 @@ const Records = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-6xl">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
         <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
+        <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
+          <input
+            type="text"
+            placeholder="Search by name, email, or mobile..."
+            className="border p-2 rounded-lg w-100 mb-4"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
 
-        
-        <input
-          type="text"
-          placeholder="Search by name, email, or mobile..."
-          className="border p-2 rounded-lg w-100 mb-4"
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // reset to first page when searching
-          }}
-        />
+          <div className="flex justify-end mb-3">
+            <label className="mr-2 font-medium mt-2">Rows per page:</label>
+            <select
+              value={recordsPerPage}
+              onChange={(e) => {
+                setRecordsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="border p-2 rounded-lg"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
+              <option value={25}>25</option>
+            </select>
+          </div>
+        </div>
 
        
         {currentRecords.length === 0 ? (
@@ -164,13 +186,39 @@ const Records = () => {
                   </td>
                   <td className="border p-2">{rec.mobile}</td>
                   <td className="border p-2">{rec.email}</td>
-                  <td className="border p-2">{rec.dob}</td>
+                  <td className="border p-2">
+                    {new Date(rec.dob).toLocaleDateString()}
+                  </td>
                   <td className="border p-2">{rec.college}</td>
                   <td className="border p-2">
-                    {rec.durationStart} → {rec.durationEnd}
+                    {new Date(rec.durationStart).toLocaleDateString()} →{" "}
+                    {new Date(rec.durationEnd).toLocaleDateString()}
                   </td>
                   <td className="border p-2">{rec.aadhar}</td>
                   <td className="border p-2">{rec.address}</td>
+
+                  <td className="border p-2">
+                    {" "}
+                    <button
+                      onClick={() =>
+                        alert(`Details of ${rec.name} ${rec.lastName}`)
+                      }
+                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
+                     text-sm font-medium text-gray-900 rounded-lg group 
+                     bg-gradient-to-br from-cyan-500 to-blue-500 
+                     group-hover:from-cyan-500 group-hover:to-blue-500 
+                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
+                     focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                    >
+                      <span
+                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
+                           bg-white dark:bg-gray-900 rounded-md 
+                           group-hover:bg-transparent group-hover:dark:bg-transparent"
+                      >
+                        View
+                      </span>
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
