@@ -10,8 +10,9 @@ const Records = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/registration"); // backend API
+        const response = await fetch("http://localhost:4000/api/user/"); // backend API
         const data = await response.json();
+        console.log("userData = ", data);
         setRecords(data);
       } catch (error) {
         console.error("Error fetching records:", error);
@@ -21,17 +22,17 @@ const Records = () => {
     fetchRecords();
   }, []);
 
-  
-   
   // Search code
 
   const filteredRecords = records.filter((rec) => {
-    const fullName =
-      `${rec.name} ${rec.middleName} ${rec.lastName}`.toLowerCase();
+    const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
+      rec.lastName || ""
+    }`.toLowerCase();
+
     return (
       fullName.includes(searchTerm.toLowerCase()) ||
       rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rec.mobile?.includes(searchTerm)
+      rec.mobile?.toString().includes(searchTerm)
     );
   });
 
@@ -46,7 +47,7 @@ const Records = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-6xl">
+      <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
         <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
         <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
           <input
@@ -56,7 +57,7 @@ const Records = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); 
+              setCurrentPage(1);
             }}
           />
 
@@ -66,7 +67,7 @@ const Records = () => {
               value={recordsPerPage}
               onChange={(e) => {
                 setRecordsPerPage(Number(e.target.value));
-                setCurrentPage(1); 
+                setCurrentPage(1);
               }}
               className="border p-2 rounded-lg"
             >
@@ -104,13 +105,17 @@ const Records = () => {
                   </td>
                   <td className="border p-2">{rec.mobile}</td>
                   <td className="border p-2">{rec.email}</td>
-                  <td className="border p-2">{rec.dob}</td>
+                  <td className="border p-2">
+                    {new Date(rec.dob).toLocaleDateString()}
+                  </td>
                   <td className="border p-2">{rec.college}</td>
                   <td className="border p-2">
-                    {rec.durationStart} → {rec.durationEnd}
+                    {new Date(rec.durationStart).toLocaleDateString()} →{" "}
+                    {new Date(rec.durationEnd).toLocaleDateString()}
                   </td>
                   <td className="border p-2">{rec.aadhar}</td>
                   <td className="border p-2">{rec.address}</td>
+
                   <td className="border p-2">
                     {" "}
                     <button
@@ -176,7 +181,6 @@ const Records = () => {
         )}
       </div>
     </div>
-
   );
 };
 
