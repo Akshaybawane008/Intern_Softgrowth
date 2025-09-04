@@ -4,7 +4,7 @@ const Records = () => {
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(5); // 5 record show
+  const [recordsPerPage, setRecordsPerPage] = useState(5);
 
   // Fetch data from backend API
   useEffect(() => {
@@ -24,17 +24,19 @@ const Records = () => {
 
   // Search code
 
-  const filteredRecords = records.filter((rec) => {
-    const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
-      rec.lastName || ""
-    }`.toLowerCase();
+  const filteredRecords = records
+    .filter((rec) => {
+      const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
+        rec.lastName || ""
+      }`.toLowerCase();
 
-    return (
-      fullName.includes(searchTerm.toLowerCase()) ||
-      rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      rec.mobile?.toString().includes(searchTerm)
-    );
-  });
+      return (
+        fullName.includes(searchTerm.toLowerCase()) ||
+        rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        rec.mobile?.toString().includes(searchTerm)
+      );
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   // table list code
   const indexOfLastRecord = currentPage * recordsPerPage;
