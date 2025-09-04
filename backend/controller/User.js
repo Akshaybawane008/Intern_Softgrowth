@@ -100,6 +100,8 @@ export const registerUser = async (req, res) => {
             to: email,  // <-- dynamic: intern's registered email
             subject: "Your Internship Account Credentials",
             text: `Hello ${name},\n\nYour internship account has been created successfully.\n\nUsername: ${email}\nPassword: ${password}\n\nPlease login and change your password immediately.`
+
+
         };
 
         await transporter.sendMail(mailOptions);
@@ -138,9 +140,22 @@ export const updateUser = async (req, res) => {
     let user = await User.findOne({ _id: id, })
     console.log(user)
 
-    if (!users) return res.json({ message: "no user exist", success: "false" })
-    res.json(users)
+    if (!user) return res.json({ message: "no user exist", success: "false" })
+    res.json(user)
 }
+
+export const userDelete = async (req, res) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 // Routes
 // post method

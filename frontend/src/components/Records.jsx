@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 
 const Records = () => {
   const [records, setRecords] = useState([]);
@@ -22,8 +22,32 @@ const Records = () => {
     fetchRecords();
   }, []);
 
-  // Search code
+  // ✅ Delete handler
+  const handleDelete = async (rec) => {
+    if (!window.confirm(`Are you sure you want to delete ${rec.name} ${rec.lastName}?`)) {
+      return;
+    }
 
+    try {
+      // Call backend delete API (assuming you use rec._id as unique ID)
+      const response = await fetch(`http://localhost:4000/api/user/${rec._id}`, {method: "DELETE" });
+
+
+      if (response.ok) {
+        alert(`Details of ${rec.name} ${rec.lastName} deleted successfully`);
+        // update state locally
+        setRecords((prev) => prev.filter((r) => r._id !== rec._id));
+      } else {
+        alert("Failed to delete record");
+        console.log(response)
+      }
+    } catch (error) {
+      console.error("Error deleting record:", error);
+      alert("Error deleting record");
+    }
+  };
+
+  // Search code
   const filteredRecords = records
     .filter((rec) => {
       const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
@@ -38,7 +62,7 @@ const Records = () => {
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  // table list code
+  // Pagination
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = filteredRecords.slice(
@@ -97,6 +121,7 @@ const Records = () => {
                 <th className="border p-2">Aadhar No.</th>
                 <th className="border p-2">Address</th>
                 <th className="border p-2">Details</th>
+                <th className="border p-2">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -119,7 +144,6 @@ const Records = () => {
                   <td className="border p-2">{rec.address}</td>
 
                   <td className="border p-2">
-                    {" "}
                     <button
                       onClick={() =>
                         alert(`Details of ${rec.name} ${rec.lastName}`)
@@ -137,6 +161,26 @@ const Records = () => {
                            group-hover:bg-transparent group-hover:dark:bg-transparent"
                       >
                         View
+                      </span>
+                    </button>
+                  </td>
+
+                  <td className="border p-2">
+                    <button
+                      onClick={() => handleDelete(rec)}
+                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
+                     text-sm font-medium text-gray-900 rounded-lg group 
+                     bg-gradient-to-br from-red-500 to-pink-500 
+                     group-hover:from-red-500 group-hover:to-pink-500 
+                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
+                     focus:ring-red-200 dark:focus:ring-red-800"
+                    >
+                      <span
+                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
+                           bg-white dark:bg-gray-900 rounded-md 
+                           group-hover:bg-transparent group-hover:dark:bg-transparent"
+                      >
+                        Delete
                       </span>
                     </button>
                   </td>
