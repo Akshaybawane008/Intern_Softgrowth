@@ -27,7 +27,7 @@ const Sidebar = () => {
     { name: "Registration", icon: <UserPlus size={20} />, link: "/admin/registration" },
     { name: "Settings", icon: <Settings size={20} />, link: "/admin/settings" },
     { name: "Records", icon: <TextSearch size={20}/>, link: "/admin/records" },
-    { name: "task", icon: <BookOpenCheck size={20} />, link: "/admin/task" },
+    { name: "Task", icon: <BookOpenCheck size={20} />, link: "/admin/task" },
   ];
 
   return (
