@@ -100,6 +100,8 @@ export const registerUser = async (req, res) => {
             to: email,  // <-- dynamic: intern's registered email
             subject: "Your Internship Account Credentials",
             text: `Hello ${name},\n\nYour internship account has been created successfully.\n\nUsername: ${email}\nPassword: ${password}\n\nPlease login and change your password immediately.`
+
+
         };
 
         await transporter.sendMail(mailOptions);
@@ -136,13 +138,13 @@ export const getAllUser = async (req, res) => {
 // api/users/:id
 export const getUserById = async (req, res) => {
     let id = req.params.id
-  console.log(id)
+    console.log(id)
 
     let user = await User.findById(id)
     console.log(user)
 
     if (!user) return res.json({ message: "no user exist", success: "false" })
-    res.json({message:"user found successfully",user,success:true})
+    res.json({ message: "user found successfully", user, success: true })
 }
 
 // update user by id
@@ -153,19 +155,34 @@ export const updateUserById = async (req, res) => {
     let user = await User.findByIdAndUpdate(id, req.body, { new: true })
 
     if (!user) return res.json({ message: "no user exist", success: "false" })
-    res.json({message:"user updated successfully",user,success:true})
+    res.json({ message: "user updated successfully", user, success: true })
 }
 
 // delete user by id
 // routes
 // api/users/:id
-export const deleteUserById = async (req, res) => {
-    let id = req.params.id
-    let user = await User.findByIdAndDelete(id)
 
-    if (!user) return res.json({ message: "no user exist", success: "false" })
-    res.json({message:"user deleted successfully",user,success:true})
-}
+export const deleteUserById = async (req, res) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+        if (!deletedUser) {
+
+            return res.status(404).json({ message: "User not found" });
+
+        }
+
+        res.json({ message: "User deleted successfully" });
+
+    } catch (error) {
+
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: "Server error" });
+
+    }
+};
+
+         
 
 // Routes
 // post method

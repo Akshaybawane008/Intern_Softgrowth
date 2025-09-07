@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Home, User, Settings, LogOut, UserPlus, Menu , X, TextSearch } from "lucide-react";
+import { Home, User, Settings, LogOut, UserPlus, Menu , X, TextSearch, BookOpenCheck } from "lucide-react";
 import { Link, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Registrationform from "../components/Registrationform";
 import Task from "../components/Task";
@@ -27,8 +27,7 @@ const Sidebar = () => {
     { name: "Registration", icon: <UserPlus size={20} />, link: "/admin/registration" },
     { name: "Settings", icon: <Settings size={20} />, link: "/admin/settings" },
     { name: "Records", icon: <TextSearch size={20}/>, link: "/admin/records" },
-    
-    { name: "task", icon: <Settings size={20} />, link: "/admin/task" },
+    { name: "Task", icon: <BookOpenCheck size={20} />, link: "/admin/task" },
   ];
 
   return (
