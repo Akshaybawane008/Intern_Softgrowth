@@ -1,7 +1,8 @@
 import express from "express"
 import bodyParser from "express";
 import mongoose from "mongoose";
-import useRouter from "./Routes/user.js"
+import userRoutes from "./Routes/user.js"
+import taskRoutes from "./Routes/Task.js"
 import cors from "cors"
 const app = express()
 app.use(cors({
@@ -12,6 +13,7 @@ app.use(cors({
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json());
+
 //   server port number
 const port = 4000;
 
@@ -20,7 +22,8 @@ mongoose.connect("mongodb+srv://jrsahil24:ECG7sbLpbFnWigbv@cluster0.1rd532c.mong
     { dbName: "intern_Task_management" }
 ).then(() => console.log("mongo db connected successfully")).catch((error) => console.log(error = error.message));
 
-app.use("/api/user/",useRouter);
+app.use("/api/users",userRoutes);
+app.use("/api/intern",taskRoutes);
 
 app.get("/", (req, res) => {
     res.end("hello sahil")

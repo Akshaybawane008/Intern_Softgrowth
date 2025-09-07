@@ -130,16 +130,41 @@ export const getAllUser = async (req, res) => {
     if (!users) return res.json({ message: "no users exist", success: "false" })
     res.json(users)
 }
-// api/user/:id
-export const updateUser = async (req, res) => {
+
+// get user by id
+// routes
+// api/users/:id
+export const getUserById = async (req, res) => {
     let id = req.params.id
+  console.log(id)
 
-
-    let user = await User.findOne({ _id: id, })
+    let user = await User.findById(id)
     console.log(user)
 
-    if (!users) return res.json({ message: "no user exist", success: "false" })
-    res.json(users)
+    if (!user) return res.json({ message: "no user exist", success: "false" })
+    res.json({message:"user found successfully",user,success:true})
+}
+
+// update user by id
+// routes
+// api/users/:id
+export const updateUserById = async (req, res) => {
+    let id = req.params.id
+    let user = await User.findByIdAndUpdate(id, req.body, { new: true })
+
+    if (!user) return res.json({ message: "no user exist", success: "false" })
+    res.json({message:"user updated successfully",user,success:true})
+}
+
+// delete user by id
+// routes
+// api/users/:id
+export const deleteUserById = async (req, res) => {
+    let id = req.params.id
+    let user = await User.findByIdAndDelete(id)
+
+    if (!user) return res.json({ message: "no user exist", success: "false" })
+    res.json({message:"user deleted successfully",user,success:true})
 }
 
 // Routes
