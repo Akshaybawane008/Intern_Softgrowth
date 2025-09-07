@@ -10,7 +10,7 @@ const Records = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/user/"); // backend API
+        const response = await fetch("http://localhost:4000/api/users"); // backend API
         const data = await response.json();
         console.log("userData = ", data);
         setRecords(data);
@@ -30,7 +30,7 @@ const Records = () => {
 
     try {
       // Call backend delete API (assuming you use rec._id as unique ID)
-      const response = await fetch(`http://localhost:4000/api/user/${rec._id}`, {method: "DELETE" });
+      const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, {method: "DELETE" });
 
 
       if (response.ok) {
