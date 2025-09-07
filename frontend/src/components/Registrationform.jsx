@@ -22,7 +22,7 @@ const Registrationform = () => {
   // Save Data (POST to API)
   const handleSave = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/user/register", {
+      const response = await fetch("http://localhost:4000/api/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const Registrationform = () => {
   // Update Data (PUT to API)
   const handleUpdate = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/registration/123", {
+      const response = await fetch("http://localhost:5000/api/users/", {
         method: "PUT", // or PATCH
         headers: {
           "Content-Type": "application/json",

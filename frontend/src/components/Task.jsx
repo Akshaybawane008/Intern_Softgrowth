@@ -12,7 +12,7 @@ const Task = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/user/"); // API as Records
+        const response = await fetch("http://localhost:4000/api/users/"); // API as Records
         const data = await response.json();
         console.log("Fetched students:", data);
 
