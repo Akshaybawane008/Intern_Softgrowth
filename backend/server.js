@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import userRoutes from "./Routes/user.js"
 import taskRoutes from "./Routes/Task.js"
 import cors from "cors"
+import fileUpload from "express-fileupload";
+
 const app = express()
 app.use(cors({
     origin: "http://localhost:5173", // replace with your frontend URL
@@ -13,6 +15,7 @@ app.use(cors({
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json());
+app.use(fileUpload()); // enable file upload
 
 //   server port number
 const port = 4000;

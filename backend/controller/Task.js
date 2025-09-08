@@ -2,38 +2,48 @@ import mongoose from "mongoose";
 import { Task } from "../model/Task.js";
 import { publicDecrypt } from "crypto";
 import { get } from "http";
-
+import fs from "fs";
+import path from "path";
 
 //method post
 //routes
 // api/intern/task
+
+
 export const createTask = async (req, res) => {
-    console.log(req.body)
+  try {
+    const { assignedTo, assignTask, remark, deadline } = req.body;
 
-    const { assignedTo, name, assignTask, attachments, remark, deadline } = req.body;
+    // handle attachments
+    let attachments = [];
+    if (req.files && req.files.attachments) {
+      const files = Array.isArray(req.files.attachments)
+        ? req.files.attachments
+        : [req.files.attachments];
 
-    // validation
-    if (!assignedTo || !name || !assignTask || !remark || !deadline || !attachments) {
-        return res.status(400).json({ message: "All fields are required" });
+      files.forEach((file) => {
+        const filePath = `./assets/img/${file.name}`;
+        file.mv(filePath); // move file to assets/img
+        attachments.push(filePath);
+      });
     }
 
+    const task = await Task.create({
+      assignedTo,
+      assignTask,
+      attachments,
+      remark,
+      deadline,
+    });
+
+    res.json({ message: "Task created successfully", task });
+  } catch (error) {
+    console.error("Error creating task:", error);
+    res.status(500).json({ message: "Error creating task", error });
+  }
+};
 
 
-    try {
-        const task = await Task.create({
-            assignedTo,
-            name,
-            assignTask,
-            attachments,
-            remark,
-            deadline
-        });
-        await task.save();
-        res.json({ message: "Task Assigned successfully", task: task });
-    } catch (err) {
-        res.status(400).json({ message: "Error fetching tasks", error: err.message });
-    }
-}
 
 //method get
 //routes
@@ -62,7 +72,7 @@ export const getAllTask = async (req, res) => {
 export const updateTaskById = async (req, res) => {
     const id = req.params.id
     console.log(req.body)
-    const { name, assignTask, attachments, remark, deadline } = req.body;
+    const {  assignTask, attachments, remark, deadline } = req.body;
     const updatetask = await Task.findByIdAndUpdate(id,
         { name, assignTask, attachments, remark, deadline },
         { new: true })
