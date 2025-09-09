@@ -86,7 +86,7 @@ const Task = () => {
   };
 
   return (
-    <div className="mt-[180px]">
+    <div className="mt-[80px]">
       <form onSubmit={handleSubmit} className="w-auto max-w-[600px] p-6 bg-gray-50 shadow-xl mx-auto">
         <h2 className="text-2xl font-semibold text-center mb-5">Assign Tasks</h2>
 
