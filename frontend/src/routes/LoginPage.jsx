@@ -1,23 +1,44 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:4000/api/users/login", {
+        email,
+        password,
+      }, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-    // Dummy logic: decide role based on email
-    if (email === "admin@test.com" && password === "123456") {
-      localStorage.setItem("auth", JSON.stringify({ role: "admin" }));
-      navigate("/admin/dashboard");
-    } else if (email === "intern@test.com" && password === "123456") {
-      localStorage.setItem("auth", JSON.stringify({ role: "intern" }));
-      navigate("/intern/dashboard");
-    } else {
-      alert("Invalid credentials");
+      const { token, role } = res.data;
+      console.log("Login successful:", res.data);
+
+      if (!token) {
+        alert("Login failed: No token received");
+        return;
+      }
+
+      // Store token and role as 'auth' object for PrivateRoute
+const auth = { token, role };
+localStorage.setItem("auth", JSON.stringify(auth));
+      // navigate by role
+
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "intern") {
+        navigate("/intern/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -45,7 +66,10 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
           Login
         </button>
       </form>

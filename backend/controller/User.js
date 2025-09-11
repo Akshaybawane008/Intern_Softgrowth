@@ -37,7 +37,8 @@ export const registerUser = async (req, res) => {
         durationStart,
         durationEnd,
         address,
-        aadhar
+        aadhar,
+
     } = req.body;
 
     // Validation
@@ -110,11 +111,7 @@ export const registerUser = async (req, res) => {
         res.status(201).json({
             message: "User created successfully and credentials sent to email",
             success: true,
-            user: {
-                id: user._id,
-                email: user.email,
-                name: `${user.name} ${user.lastName}`
-            }
+            user: user
         });
 
     } catch (error) {
@@ -190,6 +187,7 @@ export const deleteUserById = async (req, res) => {
 export const loginUser = async (req, res) => {
 
     let { email, password } = req.body;
+
     if (!email || !password) return res.json({ message: "email and password required", success: "false" })
     let user = await User.findOne({ email })
     if (!user) return res.json({ message: "user doesnot exist", success: false })
@@ -199,7 +197,7 @@ export const loginUser = async (req, res) => {
     let token = jwt.sign({ user: user._id }, "$%%^%#$#", {
         expiresIn: "1d"
     })
-    res.json({ message: `hello ${user.name} you successfully log in`, success: true, token })
+    res.json({ message: `hello ${user.name} you successfully log in`, success: true, token, role: user.role })
 
 
 

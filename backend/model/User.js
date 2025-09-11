@@ -24,7 +24,8 @@ const userSchema = mongoose.Schema({
     durationEnd: { type: Date, required: true },
     address: { type: String, required: true },
     aadhar: { type: Number, required: true, unique: true },
-    password :{ type: String, required: true }
+    password :{ type: String, required: true },
+    role: { type: String, enum: ["admin", "intern"], default: "intern" },
 }, {
     timestamps: true // Adds createdAt and updatedAt fields automatically
 });
