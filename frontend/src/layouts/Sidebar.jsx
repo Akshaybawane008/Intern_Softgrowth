@@ -56,14 +56,12 @@ const Sidebar = () => {
         <div>
           <div className="flex items-center justify-center mb-6 ">
             {/* Sidebar Heading */}
-            {isOpen && (
-              <h2 className="text-xl font-bold ">Softgrowth</h2>
-            )}
+            {isOpen && <h2 className="text-xl font-bold ">Softgrowth</h2>}
             {/* Toggle Button */}
             <button
               className={`text-black transition-all ${
-      isOpen ? "ml-auto" : "mx-auto"
-    }`}
+                isOpen ? "ml-auto" : "mx-auto"
+              }`}
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <Menu /> : <ArrowRight />}

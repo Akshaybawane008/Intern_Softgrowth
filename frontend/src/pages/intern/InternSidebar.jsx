@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { Home, ListTodo, History, LogOut, Menu } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+
+import DashboradIntern from "../../components/Intern/DashboradIntern";
+import HistoryIntern from "../../components/Intern/HistoryIntern";
+import TaskIntern from "../../components/Intern/TaskIntern";
 
 const InternSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     localStorage.removeItem("auth"); // clear login data
@@ -51,15 +56,21 @@ const InternSidebar = () => {
 
           {/* Menu Items */}
           <ul className="space-y-2 p-4">
-            {menuItems.map((item, index) => (
-              <li
-                key={index}
-                className="flex items-center gap-3 cursor-pointer hover:bg-gray-700 p-2 rounded-lg"
-              >
-                {item.icon}
-                {isOpen && <span>{item.name}</span>}
-              </li>
-            ))}
+            {menuItems.map((item, index) => {
+              const isActive = location.pathname === item.link;
+              return (
+                <li
+                  key={index}
+                  onClick={() => navigate(item.link)}
+                  className={`flex items-center gap-3 cursor-pointer p-2 rounded-lg transition-colors ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`}
+                >
+                  {item.icon}
+                  {isOpen && <span>{item.name}</span>}
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -76,8 +87,14 @@ const InternSidebar = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-20 md:ml-0 p-6">
-        <h1 className="text-2xl font-bold">Main Content Area</h1>
+      <div className="">
+        <Routes>
+          {/* Default redirect: /intern → /intern/home */}
+          <Route path="/" element={<Navigate to="home" replace />} />
+          <Route path="home" element={<DashboradIntern />} />
+          <Route path="task" element={<TaskIntern />} />
+          <Route path="history" element={<HistoryIntern />} />
+        </Routes>
       </div>
     </div>
   );

@@ -31,9 +31,9 @@ localStorage.setItem("auth", JSON.stringify(auth));
       // navigate by role
 
       if (role === "admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin/home");
       } else if (role === "intern") {
-        navigate("/intern/dashboard");
+        navigate("/intern/home");
       } else {
         navigate("/");
       }
