@@ -5,7 +5,8 @@ const taskSchema = mongoose.Schema({
     assignTask: {type:String,required:true},
     attachments: [{ type: String }], // Array of file paths or URLs
     remark: {type:String,required:true},
-    deadline: {type:Date,required:true}
+    deadline: {type:Date,required:true},
+    user: {type: mongoose.Schema.Types.ObjectId}
 })
 
 export const Task = mongoose.model("task",taskSchema)

@@ -1,5 +1,6 @@
 import express from "express";
-import { registerUser, loginUser,getAllUser, getUserById, deleteUserById,updateUserById} from "../controller/User.js";
+import { registerUser, loginUser,getAllUser, getUserById, deleteUserById,updateUserById,getuserprofile} from "../controller/User.js";
+import { isauthenticated } from "../middelware/auth.js";
 
 const router = express.Router()
 // routes
@@ -14,10 +15,14 @@ router.post("/login",loginUser)
 router.get("/",getAllUser)
 
 // get user details by  id
-router.get("/:id",getUserById)
+router.get("/:id",isauthenticated,getUserById)
 // update user details
-router.put("/:id",updateUserById)
+router.put("/:id",isauthenticated,updateUserById)
 // delete user details
-router.delete("/:id",deleteUserById)
+router.delete("/:id",isauthenticated,deleteUserById)
+
+// get user profile
+
+router.get("/profile/me",isauthenticated,getuserprofile)
 
 export default router

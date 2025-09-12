@@ -34,6 +34,7 @@ export const createTask = async (req, res) => {
       attachments,
       remark,
       deadline,
+      user: req.user, // assuming req.user is set by authentication middleware
     });
 
     res.json({ message: "Task created successfully", task });

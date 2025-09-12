@@ -130,19 +130,6 @@ export const getAllUser = async (req, res) => {
     res.json(users)
 }
 
-// get user by id
-// routes
-// api/users/:id
-export const getUserById = async (req, res) => {
-    let id = req.params.id
-    console.log(id)
-
-    let user = await User.findById(id)
-    console.log(user)
-
-    if (!user) return res.json({ message: "no user exist", success: "false" })
-    res.json({ message: "user found successfully", user, success: true })
-}
 
 // update user by id
 // routes
@@ -185,7 +172,7 @@ export const deleteUserById = async (req, res) => {
 // post method
 // /api/user/login
 export const loginUser = async (req, res) => {
-
+  console.log(req.body);
     let { email, password } = req.body;
 
     if (!email || !password) return res.json({ message: "email and password required", success: "false" })
@@ -205,3 +192,27 @@ export const loginUser = async (req, res) => {
 
 
 
+//routes
+//get
+// api/users/profile/me
+export const getuserprofile = async (req,res)=>{
+    
+    // console.log("getting id from token =",req.user)
+    let user = await User.findById(req.user)
+    if(!user) return res.json({message:"no user exist", success:"false"})
+    res.json({message:"user profile fetched successfully", user, success:true})
+}
+
+// get user by id
+// routes
+// api/users/:id
+export const getUserById = async (req, res) => {
+    let id = req.params.id
+    console.log(id)
+
+    let user = await User.findById(id)
+    // console.log(user)
+
+    if (!user) return res.json({ message: "no user exist", success: "false" })
+    res.json({ message: "user found successfully", user, success: true })
+}
