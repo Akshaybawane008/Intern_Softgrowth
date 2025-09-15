@@ -63,10 +63,19 @@ const Task = () => {
         formData.append("attachments", attachments[i]);
       }
 
-      const response = await fetch("http://localhost:4000/api/intern/task", {
-        method: "POST",
-        body: formData
-      });
+        const authData = localStorage.getItem("auth");
+    const parsed = authData ? JSON.parse(authData) : null;
+    const token = parsed?.token;
+
+     const response = await fetch("http://localhost:4000/api/intern/task", {
+  method: "POST",
+  body: formData,
+  headers: {
+    auth:token // ✅ add token
+  },
+});
+
+        
 
       const data = await response.json();
       console.log("Task created:", data);
