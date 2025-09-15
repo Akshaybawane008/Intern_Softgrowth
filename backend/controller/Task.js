@@ -108,10 +108,10 @@ export const deleteTaskById = async (req, res) => {
     // method get
     // // get specific user  how many tasks that user have assigned
     // routes 
-    // /api/intern/:id/tasks
+    // /api/intern/assignedtasks/
 
 export const getAllTasksByUserId = async (req, res) => {
-   const id = req.params.id;
+   const id = req.user._id;
    console.log("your user id :", id)
    const tasks = await Task.find({assignedTo: id}).populate("assignedTo");
    if (!tasks) return res.json({ message: "No tasks found for this user", success: false })
