@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Home, ListTodo, History, LogOut, Menu } from "lucide-react";
+import { Home, History, LogOut, Menu } from "lucide-react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import IntenRecord from "./InternRecord";
@@ -41,7 +41,6 @@ const InternSidebar = () => {
 
   const menuItems = [
     { name: "Home", icon: <Home size={20} />, link: "/intern/home" },
-    { name: "Task", icon: <ListTodo size={20} />, link: "/intern/interrecords" },
     { name: "History", icon: <History size={20} />, link: "/intern/history" },
   ];
 
@@ -113,7 +112,7 @@ const InternSidebar = () => {
         <Routes>
           <Route path="/" element={<Navigate to="home" replace />} />
           <Route path="home" element={<InterHome />} />
-          <Route path="interrecords" element={<IntenRecord />} />
+          <Route path="history" element={<IntenRecord />} />
           {/* add history page if needed */}
         </Routes>
       </div>
