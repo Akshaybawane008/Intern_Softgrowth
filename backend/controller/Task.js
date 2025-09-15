@@ -52,7 +52,7 @@ export const createTask = async (req, res) => {
 export const getAllTask = async (req, res) => {
 
     try {
-        let tasks = await Task.find()
+        let tasks = await Task.find().populate("assignedTo");
         if (tasks.length === 0) {
             return res.status(404).json({ message: "No task found", success: false })
         }
