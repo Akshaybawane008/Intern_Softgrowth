@@ -18,7 +18,7 @@ const IntenRecord = () => {
     }
 
     axios
-      .get("http://localhost:4000/api/intern/tasks", {
+      .get("http://localhost:4000/api/intern/assignedtasks", {
         headers: { auth : token }
       })
       .then((response) => {

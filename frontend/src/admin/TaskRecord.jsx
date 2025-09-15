@@ -55,7 +55,7 @@ const TaskTable = () => {
     tasks.map((task, index) => (
       <tr key={task._id || index}>
         <td className="border px-4 py-2">{index + 1}</td>
-        <td className="border px-4 py-2">{task.name || "-"}</td>
+        <td className="border px-4 py-2">{task.assignedTo.name || "-"}</td>
         <td className="border px-4 py-2">{task.assignTask || "-"}</td>
         <td className="border px-4 py-2">
           {task.attachments && task.attachments.length > 0 ? (

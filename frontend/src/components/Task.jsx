@@ -15,7 +15,7 @@ const Task = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users"); 
+        const response = await fetch("http://localhost:4000/api/users");
         const data = await response.json();
         const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
         setStudents(sortedData);
@@ -28,7 +28,9 @@ const Task = () => {
   }, []);
 
   const handleChange = (event) => {
-    const { target: { value } } = event;
+    const {
+      target: { value },
+    } = event;
     setSelectedOptions(typeof value === "string" ? value.split(",") : value);
   };
 
@@ -51,10 +53,14 @@ const Task = () => {
       formData.append("deadline", deadline);
 
       // Send student IDs, not names
-      const studentIds = selectedOptions.map(opt => {
-        const student = students.find(s => `${s.name} ${s.lastName}` === opt);
-        return student?._id;
-      }).filter(Boolean);
+      const studentIds = selectedOptions
+        .map((opt) => {
+          const student = students.find(
+            (s) => `${s.name} ${s.lastName}` === opt
+          );
+          return student?._id;
+        })
+        .filter(Boolean);
 
       formData.append("assignedTo", studentIds.join(",")); // backend splits string to array
 
@@ -63,31 +69,28 @@ const Task = () => {
         formData.append("attachments", attachments[i]);
       }
 
-        const authData = localStorage.getItem("auth");
-    const parsed = authData ? JSON.parse(authData) : null;
-    const token = parsed?.token;
+      const authData = localStorage.getItem("auth");
+      const parsed = authData ? JSON.parse(authData) : null;
+      const token = parsed?.token;
 
-     const response = await fetch("http://localhost:4000/api/intern/task", {
-  method: "POST",
-  body: formData,
-  headers: {
-    auth:token // ✅ add token
-  },
-});
-
-        
+      const response = await fetch("http://localhost:4000/api/intern/task", {
+        method: "POST",
+        body: formData,
+        headers: {
+          auth: token, // ✅ add token
+        },
+      });
 
       const data = await response.json();
       console.log("Task created:", data);
       alert("Task created successfully!");
-      
+
       // reset form
       setSelectedOptions([]);
       setTaskText("");
       setRemark("");
       setDeadline("");
       setAttachments([]);
-
     } catch (error) {
       console.error("Error creating task:", error);
       alert("Failed to create task");
@@ -96,8 +99,13 @@ const Task = () => {
 
   return (
     <div className="mt-[80px]">
-      <form onSubmit={handleSubmit} className="w-auto max-w-[600px] p-6 bg-gray-50 shadow-xl mx-auto">
-        <h2 className="text-2xl font-semibold text-center mb-5">Assign Tasks</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="w-auto max-w-[600px] p-6 bg-gray-50 shadow-xl mx-auto"
+      >
+        <h2 className="text-2xl font-semibold text-center mb-5">
+          Assign Tasks
+        </h2>
 
         <FormControl fullWidth className="mb-5">
           <InputLabel id="multi-select-label">Select Student</InputLabel>
@@ -109,7 +117,10 @@ const Task = () => {
             renderValue={(selected) => selected.join(", ")}
           >
             {students.map((student) => (
-              <MenuItem key={student._id} value={`${student.name} ${student.lastName}`}>
+              <MenuItem
+                key={student._id}
+                value={`${student.name} ${student.lastName}`}
+              >
                 {student.name} {student.lastName} ({student.email})
               </MenuItem>
             ))}
