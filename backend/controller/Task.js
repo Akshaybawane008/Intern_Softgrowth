@@ -52,7 +52,7 @@ export const createTask = async (req, res) => {
 export const getAllTask = async (req, res) => {
 
     try {
-        let tasks = await Task.find()
+        let tasks = await Task.find().populate("assignedTo");
         if (tasks.length === 0) {
             return res.status(404).json({ message: "No task found", success: false })
         }
@@ -108,10 +108,10 @@ export const deleteTaskById = async (req, res) => {
     // method get
     // // get specific user  how many tasks that user have assigned
     // routes 
-    // /api/intern/:id/tasks
+    // /api/intern/assignedtasks/
 
 export const getAllTasksByUserId = async (req, res) => {
-   const id = req.params.id;
+   const id = req.user._id;
    console.log("your user id :", id)
    const tasks = await Task.find({assignedTo: id}).populate("assignedTo");
    if (!tasks) return res.json({ message: "No tasks found for this user", success: false })

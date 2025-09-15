@@ -1,6 +1,6 @@
 import express from "express";
 import { createTask, getAllTask, getTaskById,deleteTaskById, updateTaskById, getAllTasksByUserId } from "../controller/Task.js";
-import { isauthenticated } from "../middelware/auth.js";
+import { isauthenticated } from "../middelware/Auth.js";
 
 const router = express.Router();
 
@@ -17,6 +17,6 @@ router.put("/task/:id",isauthenticated, updateTaskById)
 router.delete("/task/:id",isauthenticated, deleteTaskById)
 
 // get specific user  how many tasks that user have assigned
-router.get("/user/:id/tasks",isauthenticated, getAllTasksByUserId)
+router.get("/assignedtasks",isauthenticated, getAllTasksByUserId)
 
 export default router;
