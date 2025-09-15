@@ -48,7 +48,7 @@ export const createTask = async (req, res) => {
 
 //method get
 //routes
-// api/intern/task
+// api/intern/tasks
 export const getAllTask = async (req, res) => {
 
     try {

@@ -1,45 +1,47 @@
 import { useEffect, useState } from "react";
 import { Home, ListTodo, History, LogOut, Menu } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
+import IntenRecord from "./InternRecord";
+import InterHome from "./InterHome"; // ✅ import your home component
 
 const InternSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [user, setUser] = useState(null); // store user data
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("auth"); // clear login data
-    navigate("/login"); // redirect to login page
+    localStorage.removeItem("auth");
+    navigate("/login");
   };
 
   useEffect(() => {
-  const authData = localStorage.getItem("auth");
-  const parsed = authData ? JSON.parse(authData) : null;
-  const token = parsed?.token;
+    const authData = localStorage.getItem("auth");
+    const parsed = authData ? JSON.parse(authData) : null;
+    const token = parsed?.token;
 
-  if (!token) {
-    navigate("/login"); // redirect if no token
-    return;
-  }
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-  axios.get("http://localhost:4000/api/users/profile/me", {
-      headers: {  auth: token }
-    })
-    .then((response) => {
-      console.log("User profile fetched successfully:", response.data);
-      setUser(response.data.user);
-    })
-    .catch((error) => {
-      console.error("Error fetching user profile:", error);
-      navigate("/login"); // if token invalid → go login
-    });
-}, [navigate]);
-
+    axios
+      .get("http://localhost:4000/api/users/profile/me", {
+        headers: { auth: token },
+      })
+      .then((response) => {
+        console.log("User profile fetched successfully:", response.data);
+        setUser(response.data.user);
+      })
+      .catch((error) => {
+        console.error("Error fetching user profile:", error);
+        navigate("/login");
+      });
+  }, [navigate]);
 
   const menuItems = [
     { name: "Home", icon: <Home size={20} />, link: "/intern/home" },
-    { name: "Task", icon: <ListTodo size={20} />, link: "/intern/task" },
+    { name: "Task", icon: <ListTodo size={20} />, link: "/intern/interrecords" },
     { name: "History", icon: <History size={20} />, link: "/intern/history" },
   ];
 
@@ -52,7 +54,7 @@ const InternSidebar = () => {
         } bg-gray-900 text-white h-screen flex flex-col justify-between transition-all duration-300 fixed md:relative`}
       >
         <div>
-          {/* Toggle Button (only on mobile) */}
+          {/* Toggle Button */}
           <div className="flex items-center justify-between p-4 md:hidden">
             <span className="text-lg font-bold">Intern Panel</span>
             <button onClick={() => setIsOpen(!isOpen)}>
@@ -60,7 +62,7 @@ const InternSidebar = () => {
             </button>
           </div>
 
-          {/* Profile Section */}
+          {/* Profile */}
           <div className="flex items-center gap-3 p-4 border-b border-gray-700">
             <img
               src={`https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}`}
@@ -79,12 +81,12 @@ const InternSidebar = () => {
             )}
           </div>
 
-          {/* Menu Items */}
+          {/* Menu */}
           <ul className="space-y-2 p-4">
             {menuItems.map((item, index) => (
               <li
                 key={index}
-                onClick={() => navigate(item.link)} // ✅ make clickable
+                onClick={() => navigate(item.link)}
                 className="flex items-center gap-3 cursor-pointer hover:bg-gray-700 p-2 rounded-lg"
               >
                 {item.icon}
@@ -94,7 +96,7 @@ const InternSidebar = () => {
           </ul>
         </div>
 
-        {/* Bottom (Logout) */}
+        {/* Logout */}
         <div className="p-4 border-t border-gray-700">
           <button
             onClick={handleLogout}
@@ -108,7 +110,12 @@ const InternSidebar = () => {
 
       {/* Main Content */}
       <div className="flex-1 ml-20 md:ml-0 p-6">
-        <h1 className="text-2xl font-bold">Main Content Area</h1>
+        <Routes>
+          <Route path="/" element={<Navigate to="home" replace />} />
+          <Route path="home" element={<InterHome />} />
+          <Route path="interrecords" element={<IntenRecord />} />
+          {/* add history page if needed */}
+        </Routes>
       </div>
     </div>
   );

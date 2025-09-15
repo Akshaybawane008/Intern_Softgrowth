@@ -1,16 +1,27 @@
 import { useState } from "react";
-import { Home, User, Settings, LogOut, UserPlus, Menu , X, TextSearch, BookOpenCheck } from "lucide-react";
+import {
+  Home,
+  LogOut,
+  UserPlus,
+  Menu,
+  X,
+  TextSearch,
+  BookOpenCheck,
+  FileText,
+} from "lucide-react";
 import { Link, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Registrationform from "../components/Registrationform";
 import Task from "../components/Task";
-import HomeP from '../admin/Home'
-import Profile from "../admin/Profile"
+import HomeP from "../admin/Home";
 import Records from "../components/Records";
+import TaskRecord from "../admin/TaskRecord";
 
 // Example extra pages
-const HomePage = () => <h1 className="text-2xl"><HomeP/></h1>;
-const ProfilePage = () => <h1 className="p-6 text-2xl"><Profile/></h1>;
-const SettingsPage = () => <h1 className="p-6 text-2xl">⚙️ Settings Page</h1>;
+const HomePage = () => (
+  <h1 className="text-2xl">
+    <HomeP />
+  </h1>
+);
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -23,11 +34,22 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Home", icon: <Home size={20} />, link: "/admin/home" },
-    { name: "Profile", icon: <User size={20} />, link: "/admin/profile" },
-    { name: "Registration", icon: <UserPlus size={20} />, link: "/admin/registration" },
-    { name: "Settings", icon: <Settings size={20} />, link: "/admin/settings" },
-    { name: "Records", icon: <TextSearch size={20}/>, link: "/admin/records" },
-    { name: "Task", icon: <BookOpenCheck size={20} />, link: "/admin/task" },
+    {
+      name: "Assign Task",
+      icon: <BookOpenCheck size={20} />,
+      link: "/admin/task",
+    },
+    {
+      name: "Task Records",
+      icon: <FileText size={20} />,
+      link: "/admin/taskrecords",
+    },
+    {
+      name: "Registration",
+      icon: <UserPlus size={20} />,
+      link: "/admin/registration",
+    },
+    { name: "User Records", icon: <TextSearch size={20} />, link: "/admin/records" },
   ];
 
   return (
@@ -41,21 +63,17 @@ const Sidebar = () => {
         {/* Top Section */}
         <div>
           <div className="flex">
-          
-          {/* Sidebar Heading */}
-          {isOpen && (
-            <h2 className="text-xl font-bold mb-6 text-center">
-             Softgrowth
-            </h2>
-          )}
+            {/* Sidebar Heading */}
+            {isOpen && (
+              <h2 className="text-xl font-bold mb-6 text-center">Softgrowth</h2>
+            )}
             {/* Toggle Button */}
-          <button
-            className="text-black mb-6 ml-auto"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <Menu /> : <X />}
-          </button>
-
+            <button
+              className="text-black mb-6 ml-auto"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <Menu /> : <X />}
+            </button>
           </div>
 
           {/* Menu Items */}
@@ -92,11 +110,10 @@ const Sidebar = () => {
           {/* Default redirect: /admin → /admin/home */}
           <Route path="/" element={<Navigate to="home" replace />} />
           <Route path="home" element={<HomePage />} />
-          <Route path="profile" element={<ProfilePage />} />
           <Route path="registration" element={<Registrationform />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route path="taskrecords" element={<TaskRecord />} />
           <Route path="records" element={<Records />} />
-          <Route path="task" element={<Task/>} />
+          <Route path="task" element={<Task />} />
         </Routes>
       </div>
     </div>

@@ -10,12 +10,16 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/users/login", {
-        email,
-        password,
-      }, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await axios.post(
+        "http://localhost:4000/api/users/login",
+        {
+          email,
+          password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const { token, role } = res.data;
       console.log("Login successful:", res.data);
@@ -26,14 +30,14 @@ const LoginPage = () => {
       }
 
       // Store token and role as 'auth' object for PrivateRoute
-const auth = { token, role };
-localStorage.setItem("auth", JSON.stringify(auth));
+      const auth = { token, role };
+      localStorage.setItem("auth", JSON.stringify(auth));
       // navigate by role
 
       if (role === "admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin/home");
       } else if (role === "intern") {
-        navigate("/intern/dashboard");
+        navigate("/intern/home");
       } else {
         navigate("/");
       }
