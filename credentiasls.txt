@@ -1,16 +1,13 @@
 
-email: 
-akshaybawane008@gmail.com
-pass
-akshay2c81fb
+email: akshaybawane008@gmail.com
+pass : akshay2c81fb
 
 
-email:
-aniketparkhi2004@gmail.com
+email: aniketparkhi2004@gmail.com
 pass:  aniket25331d
 
 
-email jrsahil24@gmail.com
+email : jrsahil24@gmail.com
 pass : sahil 63224b
 
 
