@@ -22,7 +22,7 @@ export const isauthenticated = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
-    // console.log("user in auth middleware =", fetchedUser);
+    console.log("user in auth middleware =", fetchedUser);
 
     // attach user object to request
     req.user = fetchedUser;

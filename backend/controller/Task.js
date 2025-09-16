@@ -69,14 +69,13 @@ export const getAllTask = async (req, res) => {
 // update task by id 
 //method put
 //routes
-// api/intern/task/:id
+// api/intern/task/update/:id
 export const updateTaskById = async (req, res) => {
-    const id = req.params.id
-    console.log(req.body)
-    const {  assignTask, attachments, remark, deadline } = req.body;
-    const updatetask = await Task.findByIdAndUpdate(id,
-        { name, assignTask, attachments, remark, deadline },
-        { new: true })
+    const id = req.params.id;
+    console.log("your task id :", id)
+  
+    const { statusbar } = req.body;
+    const updatetask = await Task.findByIdAndUpdate(id, { statusbar }, { new: true })
     if (!updatetask) return res.json({ message: "task not found", success: false })
     res.json({ message: "task update successfully", updatetask, success: true })
 

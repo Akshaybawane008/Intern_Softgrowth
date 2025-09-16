@@ -13,7 +13,7 @@ router.post("/task",isauthenticated, createTask);
 router.get("/tasks",isauthenticated, getAllTask);
 
 router.get("/task/:id",isauthenticated, getTaskById)
-router.put("/task/:id",isauthenticated, updateTaskById)
+router.put("/task/update/:id",isauthenticated, updateTaskById)
 router.delete("/task/:id",isauthenticated, deleteTaskById)
 
 // get specific user  how many tasks that user have assigned

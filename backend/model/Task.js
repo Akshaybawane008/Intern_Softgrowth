@@ -6,7 +6,9 @@ const taskSchema = mongoose.Schema({
     attachments: [{ type: String }], // Array of file paths or URLs
     remark: {type:String,required:true},
     deadline: {type:Date,required:true},
-    user: {type: mongoose.Schema.Types.ObjectId}
+    user: {type: mongoose.Schema.Types.ObjectId},
+    statusbar: {type:String,enum:["new","in-progress","completed"],default:"new"},
+    createdAt: {type:Date,default:Date.now}
 })
 
 export const Task = mongoose.model("task",taskSchema)
