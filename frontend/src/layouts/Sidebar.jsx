@@ -49,7 +49,7 @@ const Sidebar = () => {
       icon: <UserPlus size={20} />,
       link: "/admin/registration",
     },
-    { name: "User Records", icon: <TextSearch size={20} />, link: "/admin/records" },
+    { name: "Intern Records", icon: <TextSearch size={20} />, link: "/admin/records" },
   ];
 
   return (
