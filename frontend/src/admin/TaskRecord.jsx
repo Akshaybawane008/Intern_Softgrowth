@@ -48,6 +48,7 @@ const TaskTable = () => {
             <th className="border border-gray-300 px-4 py-2">File</th>
             <th className="border border-gray-300 px-4 py-2">Remark</th>
             <th className="border border-gray-300 px-4 py-2">Date</th>
+             <th className="border border-gray-300 px-4 py-2">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +56,7 @@ const TaskTable = () => {
     tasks.map((task, index) => (
       <tr key={task._id || index}>
         <td className="border px-4 py-2">{index + 1}</td>
-        <td className="border px-4 py-2">{task.assignedTo.name || "-"}</td>
+        <td className="border px-4 py-2">{task.assignedTo?.name || "-"}</td>
         <td className="border px-4 py-2">{task.assignTask || "-"}</td>
         <td className="border px-4 py-2">
           {task.attachments && task.attachments.length > 0 ? (
@@ -79,6 +80,7 @@ const TaskTable = () => {
             ? new Date(task.deadline).toLocaleDateString()
             : "-"}
         </td>
+       <td className="border px-4 py-2">{task.statusbar || "-"}</td>
       </tr>
     ))
   ) : (
