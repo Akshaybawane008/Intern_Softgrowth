@@ -35,7 +35,7 @@ const Home = () => {
   if (loading) return <p className="p-6">Loading...</p>;
 
   // ✅ Count tasks by status
-  const assignedCount = tasks.length; // all tasks assigned to user
+  const assignedCount = tasks.filter((t) => t.statusbar === "new").length;
   const pendingCount = tasks.filter((t) => t.statusbar === "inprogress").length;
   const doneCount = tasks.filter((t) => t.statusbar === "completed").length;
 
@@ -45,7 +45,7 @@ const Home = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 p-6">
         <div onClick={() => setActiveTab("assigned")} className="cursor-pointer">
           <StatCard
-            label="Assigned Task"
+            label="New Task"
             value={assignedCount}
             icon={<ClipboardList className="w-8 h-8 text-blue-500" />}
             bgColor={activeTab === "assigned" ? "bg-blue-100" : "bg-white"}
