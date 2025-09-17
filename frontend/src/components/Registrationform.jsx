@@ -81,7 +81,7 @@ const Registrationform = () => {
 
         <div className="flex justify-between mt-6">
           <button onClick={handleUpdate} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Update
+            Cancel
           </button>
           <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
             Save
