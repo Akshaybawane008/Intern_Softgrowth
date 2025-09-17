@@ -1,9 +1,12 @@
 import React from "react";
+import IntenRecord from "../intern/InternRecord";
 
 const AssingedTask = () => {
   return (
     <>
-    Assingned Tasks
+      <div >
+        <IntenRecord />
+      </div>
     </>
   );
 };

@@ -1,12 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClipboardList, Clock, CheckCircle } from "lucide-react";
 import StatCard from "./StatCard";
 import AssingedTask from "../internComponent/AssingedTask";
 import DoneTask from "../internComponent/DoneTask";
 import PendingTask from "../internComponent/PendingTask";
+import axios from "axios";
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState("assigned"); // default: Assigned
+  const [activeTab, setActiveTab] = useState("assigned"); 
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const authData = localStorage.getItem("auth");
+    const parsed = authData ? JSON.parse(authData) : null;
+    const token = parsed?.token;
+
+    if (!token) return;
+
+    axios
+      .get("http://localhost:4000/api/intern/assignedtasks", {
+        headers: { auth: token },
+      })
+      .then((res) => {
+        setTasks(res.data.tasks || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching tasks:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p className="p-6">Loading...</p>;
+
+  // ✅ Count tasks by status
+  const assignedCount = tasks.length; // all tasks assigned to user
+  const pendingCount = tasks.filter((t) => t.statusbar === "inprogress").length;
+  const doneCount = tasks.filter((t) => t.statusbar === "completed").length;
 
   return (
     <>
@@ -15,7 +46,7 @@ const Home = () => {
         <div onClick={() => setActiveTab("assigned")} className="cursor-pointer">
           <StatCard
             label="Assigned Task"
-            value="10"
+            value={assignedCount}
             icon={<ClipboardList className="w-8 h-8 text-blue-500" />}
             bgColor={activeTab === "assigned" ? "bg-blue-100" : "bg-white"}
             textColor="text-gray-800"
@@ -25,7 +56,7 @@ const Home = () => {
         <div onClick={() => setActiveTab("pending")} className="cursor-pointer">
           <StatCard
             label="Pending Task"
-            value="4"
+            value={pendingCount}
             icon={<Clock className="w-8 h-8 text-orange-500" />}
             bgColor={activeTab === "pending" ? "bg-orange-100" : "bg-white"}
             textColor="text-gray-800"
@@ -35,7 +66,7 @@ const Home = () => {
         <div onClick={() => setActiveTab("done")} className="cursor-pointer">
           <StatCard
             label="Done Task"
-            value="6"
+            value={doneCount}
             icon={<CheckCircle className="w-8 h-8 text-green-500" />}
             bgColor={activeTab === "done" ? "bg-green-100" : "bg-white"}
             textColor="text-gray-800"
@@ -43,11 +74,15 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Render only active component */}
+      {/* Render only active component and pass tasks */}
       <div className="p-6">
-        {activeTab === "assigned" && <AssingedTask />}
-        {activeTab === "pending" && <PendingTask />}
-        {activeTab === "done" && <DoneTask />}
+        {activeTab === "assigned" && <AssingedTask tasks={tasks} />}
+        {activeTab === "pending" && (
+          <PendingTask tasks={tasks.filter((t) => t.statusbar === "inprogress")} />
+        )}
+        {activeTab === "done" && (
+          <DoneTask tasks={tasks.filter((t) => t.statusbar === "completed")} />
+        )}
       </div>
     </>
   );
