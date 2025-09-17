@@ -5,6 +5,12 @@ import userRoutes from "./Routes/user.js"
 import taskRoutes from "./Routes/Task.js"
 import cors from "cors"
 import fileUpload from "express-fileupload";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// __dirname replacement for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express()
 app.use(cors({
@@ -16,6 +22,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json());
 app.use(fileUpload()); // enable file upload
+// serve static files
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 //   server port number
 const port = 4000;

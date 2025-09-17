@@ -14,7 +14,6 @@ export const createTask = async (req, res) => {
   try {
     const { assignedTo, assignTask, remark, deadline } = req.body;
 
-    // handle attachments
     let attachments = [];
     if (req.files && req.files.attachments) {
       const files = Array.isArray(req.files.attachments)
@@ -22,19 +21,21 @@ export const createTask = async (req, res) => {
         : [req.files.attachments];
 
       files.forEach((file) => {
-        const filePath = `./assets/img/${file.name}`;
-        file.mv(filePath); // move file to assets/img
-        attachments.push(filePath);
+        const uploadPath = `./assets/img/${file.name}`;
+        file.mv(uploadPath); // move file to assets/img
+
+        // ✅ store public path, not ./assets/...
+        attachments.push(`/assets/img/${file.name}`);
       });
     }
 
     const task = await Task.create({
       assignedTo,
       assignTask,
-      attachments,
+      attachments, // now stores URLs like "/assets/img/xyz.png"
       remark,
       deadline,
-      user: req.user, // assuming req.user is set by authentication middleware
+      user: req.user,
     });
 
     res.json({ message: "Task created successfully", task });

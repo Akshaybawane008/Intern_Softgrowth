@@ -62,13 +62,14 @@ const AssignedTask = () => {
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border border-gray-300 px-4 py-2">#</th>
+            <th className="border border-gray-300 px-4 py-2"> No</th>
             <th className="border border-gray-300 px-4 py-2">Student</th>
             <th className="border border-gray-300 px-4 py-2">Task</th>
             <th className="border border-gray-300 px-4 py-2">File</th>
             <th className="border border-gray-300 px-4 py-2">Remark</th>
             <th className="border border-gray-300 px-4 py-2">Date</th>
             <th className="border border-gray-300 px-4 py-2">Status</th>
+            <th className="border border-gray-300 px-4 py-2">Details</th>
           </tr>
         </thead>
         <tbody>
@@ -102,6 +103,15 @@ const AssignedTask = () => {
                 </td>
                 <td className="border px-4 py-2 capitalize">
                   {task.statusbar || "-"}
+                </td>
+
+                <td className="border px-4 py-2">
+                  <button
+                    onClick={() => navigate(`/intern/task/${task._id}`)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    View Details
+                  </button>
                 </td>
               </tr>
             ))

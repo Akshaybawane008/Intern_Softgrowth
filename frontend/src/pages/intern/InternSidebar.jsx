@@ -4,6 +4,7 @@ import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import IntenRecord from "./InternRecord";
 import InterHome from "./InterHome"; // ✅ import your home component
+import TaskDetails from "./TaskDetails"; // ✅ import TaskDetails component
 
 const InternSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -113,7 +114,9 @@ const InternSidebar = () => {
           <Route path="/" element={<Navigate to="home" replace />} />
           <Route path="home" element={<InterHome />} />
           <Route path="history" element={<IntenRecord />} />
-          {/* add history page if needed */}
+          <Route path="task/:id" element={<TaskDetails />} />
+          {/* add history page if needed */
+          }
         </Routes>
       </div>
     </div>

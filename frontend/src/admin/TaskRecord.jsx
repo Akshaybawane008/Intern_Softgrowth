@@ -49,6 +49,7 @@ const TaskTable = () => {
             <th className="border border-gray-300 px-4 py-2">Remark</th>
             <th className="border border-gray-300 px-4 py-2">Date</th>
              <th className="border border-gray-300 px-4 py-2">Status</th>
+             
           </tr>
         </thead>
         <tbody>
