@@ -160,7 +160,7 @@ const Records = () => {
                            bg-white dark:bg-gray-900 rounded-md 
                            group-hover:bg-transparent group-hover:dark:bg-transparent"
                       >
-                        View
+                      Update
                       </span>
                     </button>
                   </td>

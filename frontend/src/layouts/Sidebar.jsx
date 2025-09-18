@@ -15,6 +15,7 @@ import Task from "../components/Task";
 import HomeP from "../admin/Home";
 import Records from "../components/Records";
 import TaskRecord from "../admin/TaskRecord";
+import TaskDetails from "../pages/intern/TaskDetails";
 
 // Example extra pages
 const HomePage = () => (
@@ -114,6 +115,7 @@ const Sidebar = () => {
           <Route path="taskrecords" element={<TaskRecord />} />
           <Route path="records" element={<Records />} />
           <Route path="task" element={<Task />} />
+          <Route path="task/:id" element={<TaskDetails />} />
         </Routes>
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 const ActiveIntern = ({ tasks }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [filteredTasks, setFilteredTasks] = useState([]);
+  const navigate = useNavigate();
 
   // Filter tasks by status "new" + search
   useEffect(() => {
@@ -74,6 +75,7 @@ const ActiveIntern = ({ tasks }) => {
                   <th className="border p-2">Due Date</th>
                   <th className="border p-2">Attachments</th>
                       <th className="border p-2">Status</th>
+                       <th className="border p-2">Details</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,8 +103,16 @@ const ActiveIntern = ({ tasks }) => {
                         "-"
                       )}
                     </td>
-                                        <td className="border p-2 capitalize">{task.statusbar || "-"}</td>
-
+          <td className="border p-2 capitalize">{task.statusbar || "-"}</td>
+          
+ <td className="border px-4 py-2">
+                  <button
+                    onClick={() => navigate(`/admin/task/${task._id}`)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    View 
+                  </button>
+                </td>
                   </tr>
                 ))}
               </tbody>

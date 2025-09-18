@@ -49,6 +49,7 @@ const TaskTable = () => {
             <th className="border border-gray-300 px-4 py-2">Remark</th>
             <th className="border border-gray-300 px-4 py-2">Date</th>
              <th className="border border-gray-300 px-4 py-2">Status</th>
+             <th className="border border-gray-300 px-4 py-2">Details</th>
              
           </tr>
         </thead>
@@ -82,6 +83,15 @@ const TaskTable = () => {
             : "-"}
         </td>
        <td className="border px-4 py-2">{task.statusbar || "-"}</td>
+        <td className="border px-4 py-2">
+                  <button
+                    onClick={() => navigate(`/admin/task/${task._id}`)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    View 
+                  </button>
+                </td>
+      
       </tr>
     ))
   ) : (
