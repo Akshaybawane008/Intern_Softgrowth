@@ -136,6 +136,8 @@ export const getAllUser = async (req, res) => {
 // api/users/:id
 export const updateUserById = async (req, res) => {
     let id = req.params.id
+    console.log("user id:", id)
+    console.log("request body:", req.body)
     let user = await User.findByIdAndUpdate(id, req.body, { new: true })
 
     if (!user) return res.json({ message: "no user exist", success: "false" })
