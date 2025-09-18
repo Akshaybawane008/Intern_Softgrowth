@@ -4,7 +4,6 @@ import {
   LogOut,
   UserPlus,
   Menu,
-  X,
   TextSearch,
   BookOpenCheck,
   FileText,
@@ -51,30 +50,36 @@ const Sidebar = () => {
       icon: <UserPlus size={20} />,
       link: "/admin/registration",
     },
-    { name: "Intern Records", icon: <TextSearch size={20} />, link: "/admin/records" },
+    {
+      name: "Intern Records",
+      icon: <TextSearch size={20} />,
+      link: "/admin/records",
+    },
   ];
 
   return (
-    <div className="flex">
+    <div className="flex ">
       {/* Sidebar */}
       <div
         className={`${
           isOpen ? "w-60" : "w-20"
-        } h-screen bg-gray-50 text-black transition-all duration-300 p-4 flex flex-col justify-between`}
+        } fixed top-0 left-0 h-screen bg-gray-50 text-black transition-all duration-300 p-4 flex flex-col justify-between`}
       >
         {/* Top Section */}
         <div>
-          <div className="flex">
+          <div
+            className={`flex items-center mb-4 ${
+              isOpen ? "justify-between" : "justify-center"
+            }`}
+          >
             {/* Sidebar Heading */}
             {isOpen && (
-              <h2 className="text-xl font-bold mb-6 text-center">Softgrowth</h2>
+              <h2 className="text-xl font-bold text-center">Softgrowth</h2>
             )}
+
             {/* Toggle Button */}
-            <button
-              className="text-black mb-6 ml-auto"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {isOpen ? <Menu /> : <X />}
+            <button className="text-black" onClick={() => setIsOpen(!isOpen)}>
+              <Menu />
             </button>
           </div>
 
@@ -107,7 +112,11 @@ const Sidebar = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 bg-gray-100 min-h-screen">
+      <div
+        className={`flex-1 bg-gray-100 min-h-screen transition-all duration-300 ${
+          isOpen ? "ml-60" : "ml-20"
+        }`}
+      >
         <Routes>
           {/* Default redirect: /admin → /admin/home */}
           <Route path="/" element={<Navigate to="home" replace />} />
