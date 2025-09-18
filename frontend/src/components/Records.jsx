@@ -1,6 +1,9 @@
 import  { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Records = () => {
+
+  const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,9 +148,7 @@ const Records = () => {
 
                   <td className="border p-2">
                     <button
-                      onClick={() =>
-                        alert(`Details of ${rec.name} ${rec.lastName}`)
-                      }
+                      onClick={() => navigate(`/admin/update/${rec._id}`)}
                       className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
                      text-sm font-medium text-gray-900 rounded-lg group 
                      bg-gradient-to-br from-cyan-500 to-blue-500 

@@ -16,6 +16,7 @@ import HomeP from "../admin/Home";
 import Records from "../components/Records";
 import TaskRecord from "../admin/TaskRecord";
 import TaskDetails from "../pages/intern/TaskDetails";
+import UpdateRegistraion from "../admin/UpdateRegistration";
 
 // Example extra pages
 const HomePage = () => (
@@ -116,6 +117,7 @@ const Sidebar = () => {
           <Route path="records" element={<Records />} />
           <Route path="task" element={<Task />} />
           <Route path="task/:id" element={<TaskDetails />} />
+          <Route path="/update/:id" element={<UpdateRegistraion />} />
         </Routes>
       </div>
     </div>
