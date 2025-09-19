@@ -76,7 +76,7 @@ function TaskDetails() {
           </select>
         </div>
         <p>
-          <strong>Student:</strong> {task.assignedTo?.name || "-"}
+          <strong>Student:</strong> {task.assignedTo?.[0]?.name} {task.assignedTo?.[0]?.lastName || "-"}
         </p>
         <p>
           <strong>Task:</strong> {task.assignTask || "-"}

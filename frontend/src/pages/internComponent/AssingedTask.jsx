@@ -47,7 +47,7 @@ const AssignedTask = () => {
     );
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-full   w-[1200px]">
       <h2 className="text-xl font-bold mb-4">Inprogress Tasks</h2>
 
       {/* ✅ Search input */}
@@ -56,8 +56,10 @@ const AssignedTask = () => {
         placeholder="Search by student, task, remark or status..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 mb-4 w-full rounded"
+        className="border p-2 mb-4 w-1/2 rounded placeholder:text-sm"
       />
+
+      <div className="overflow-x-auto">
 
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>
@@ -77,7 +79,9 @@ const AssignedTask = () => {
             filteredTasks.map((task, index) => (
               <tr key={task._id || index}>
                 <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{task.assignedTo?.name || "-"}</td>
+                <td className="border px-4 py-2">{task.assignedTo && task.assignedTo.length > 0? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                  : "-"}
+                </td>
                 <td className="border px-4 py-2">{task.assignTask || "-"}</td>
                 <td className="border px-4 py-2">
                   {task.attachments && task.attachments.length > 0 ? (
@@ -117,13 +121,14 @@ const AssignedTask = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="text-center py-4 border">
+              <td colSpan="8" className="text-center py-4 border">
                 No Completed tasks found
               </td>
             </tr>
           )}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

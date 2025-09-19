@@ -47,7 +47,7 @@ const IntenRecord = () => {
     );
 
   return (
-    <div className="p-6">
+    <div className="p-6   w-[1200px] max-w-full">
       <h2 className="text-xl font-bold mb-4">Inprogress Tasks</h2>
 
       {/* ✅ Search input */}
@@ -56,13 +56,13 @@ const IntenRecord = () => {
         placeholder="Search by student, task, remark or status..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 mb-4 w-full rounded"
+        className="border p-2 mb-4 w-1/2 rounded placeholder:text-sm"
       />
 
       <table className="table-auto w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border border-gray-300 px-4 py-2">#</th>
+            <th className="border border-gray-300 px-4 py-2">No</th>
             <th className="border border-gray-300 px-4 py-2">Student</th>
             <th className="border border-gray-300 px-4 py-2">Task</th>
             <th className="border border-gray-300 px-4 py-2">File</th>
@@ -77,7 +77,8 @@ const IntenRecord = () => {
             filteredTasks.map((task, index) => (
               <tr key={task._id || index}>
                 <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{task.assignedTo?.name || "-"}</td>
+                <td className="border px-4 py-2">                  {task.assignedTo && task.assignedTo.length > 0? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                  : "-"}</td>
                 <td className="border px-4 py-2">{task.assignTask || "-"}</td>
                 <td className="border px-4 py-2">
                   {task.attachments && task.attachments.length > 0 ? (
@@ -116,7 +117,7 @@ const IntenRecord = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="text-center py-4 border">
+              <td colSpan="8" className="text-center py-4 border">
                 No in-progress tasks found
               </td>
             </tr>
