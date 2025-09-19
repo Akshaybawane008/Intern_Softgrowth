@@ -68,18 +68,35 @@ export const getAllTask = async (req, res) => {
 // ===================== not test api below plz check it on postman ==============
 
 // update task by id 
-//method put
-//routes
-// api/intern/task/update/:id
+// method: PUT
+// route: /api/intern/task/update/:id
 export const updateTaskById = async (req, res) => {
+  try {
     const id = req.params.id;
-    console.log("your task id :", id)
-  
-    const { statusbar } = req.body;
-    const updatetask = await Task.findByIdAndUpdate(id, { statusbar }, { new: true })
-    if (!updatetask) return res.json({ message: "task not found", success: false })
-    res.json({ message: "task update successfully", updatetask, success: true })
+    console.log("your task id :", id);
+ console.log("request body:", req.body);
+    
+    const updatetask = await Task.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    ).populate("assignedTo", "name lastName email"); // populate assigned students
 
+    console.log("Updated task:", updatetask);
+    if (!updatetask) {
+      return res.json({ message: "task not found", success: false });
+    }
+
+
+    res.json({
+      message: "task update successfully",
+      updatetask: updatetask,
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error updating task:", error);
+    res.status(500).json({ message: "Server error", success: false });
+  }
 };
 
 
@@ -90,7 +107,7 @@ export const getTaskById = async (req, res) => {
     const id = req.params.id;
     console.log("your task id :", id)
     const task = await Task.findById(id).populate("assignedTo");
-
+   console.log("Fetched task:", task);
     if (!task) return res.json({ message: "task not found", success: false })
     res.json({ message: "Task fetched successfully", task, success: true })
 }

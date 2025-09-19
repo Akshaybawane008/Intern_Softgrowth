@@ -68,7 +68,7 @@ const ActiveIntern = ({ tasks }) => {
             <table className="w-full border border-gray-300">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="border p-2">#</th>
+                  <th className="border p-2">No</th>
                   <th className="border p-2">Assigned To</th>
                   <th className="border p-2">Task Title</th>
 

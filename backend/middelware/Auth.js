@@ -4,7 +4,7 @@ import { User } from "../model/User.js";
 
 export const isauthenticated = async (req, res, next) => {
   const token = req.header("auth"); // or "Authorization" if using Bearer tokens
-  console.log("token in auth middleware =", token);
+  // console.log("token in auth middleware =", token);
 
   if (!token) {
     return res.status(401).json({ message: "No token, authorization denied" });
@@ -22,7 +22,7 @@ export const isauthenticated = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
-    console.log("user in auth middleware =", fetchedUser);
+    // console.log("user in auth middleware =", fetchedUser);
 
     // attach user object to request
     req.user = fetchedUser;

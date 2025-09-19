@@ -1,48 +1,35 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Records = () => {
-
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
 
-  // Fetch data from backend API
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users"); // backend API
+        const response = await fetch("http://localhost:4000/api/users");
         const data = await response.json();
-        console.log("userData = ", data);
         setRecords(data);
       } catch (error) {
         console.error("Error fetching records:", error);
       }
     };
-
     fetchRecords();
   }, []);
 
-  // ✅ Delete handler
   const handleDelete = async (rec) => {
-    if (!window.confirm(`Are you sure you want to delete ${rec.name} ${rec.lastName}?`)) {
-      return;
-    }
+    if (!window.confirm(`Are you sure you want to delete ${rec.name} ${rec.lastName}?`)) return;
 
     try {
-      // Call backend delete API (assuming you use rec._id as unique ID)
-      const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, {method: "DELETE" });
-
-
+      const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, { method: "DELETE" });
       if (response.ok) {
-        alert(`Details of ${rec.name} ${rec.lastName} deleted successfully`);
-        // update state locally
         setRecords((prev) => prev.filter((r) => r._id !== rec._id));
       } else {
         alert("Failed to delete record");
-        console.log(response)
       }
     } catch (error) {
       console.error("Error deleting record:", error);
@@ -50,177 +37,121 @@ const Records = () => {
     }
   };
 
-  // Search code
   const filteredRecords = records
     .filter((rec) => {
-      const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
-        rec.lastName || ""
-      }`.toLowerCase();
-
-      return (
-        fullName.includes(searchTerm.toLowerCase()) ||
-        rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        rec.mobile?.toString().includes(searchTerm)
-      );
+      const fullName = `${rec.name || ""} ${rec.middleName || ""} ${rec.lastName || ""}`.toLowerCase();
+      return fullName.includes(searchTerm.toLowerCase()) ||
+             rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             rec.mobile?.toString().includes(searchTerm);
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  // Pagination
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredRecords.slice(
-    indexOfFirstRecord,
-    indexOfLastRecord
-  );
+  const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
-        <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
+    <div className="min-h-screen flex flex-col items-center bg-gray-100 p-4">
+      <div className="bg-white shadow-md rounded-xl p-4 w-full max-w-[1600px]">
+        <h2 className="text-xl font-bold mb-4 text-center">Intern Records</h2>
+
+        {/* Search & Rows per page */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
           <input
             type="text"
             placeholder="Search by name, email, or mobile..."
-            className="border p-2 rounded-lg w-100 mb-4"
+            className="border py-1 px-2 rounded w-full md:w-1/3 placeholder:text-xs"
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
           />
-
-          <div className="flex justify-end mb-3">
-            <label className="mr-2 font-medium mt-2">Rows per page:</label>
+          <div className="flex items-center gap-2">
+            <label className="text-sm">Rows:</label>
             <select
               value={recordsPerPage}
-              onChange={(e) => {
-                setRecordsPerPage(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              className="border p-2 rounded-lg"
+              onChange={(e) => { setRecordsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+              className="border p-1  text-sm rounded "
             >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
-              <option value={25}>25</option>
+              {[5,10,15,20,25].map((n) => <option key={n} value={n}>{n}</option>)}
             </select>
           </div>
         </div>
 
-        {currentRecords.length === 0 ? (
-          <p className="text-center text-gray-600">No records found.</p>
-        ) : (
-          <table className="w-full border border-gray-300">
-            <thead className="bg-gray-200">
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border border-gray-300">
+            <thead className="bg-gray-200 text-xs">
               <tr>
-                <th className="border p-2">Name</th>
-                <th className="border p-2">Mobile No.</th>
-                <th className="border p-2">Email</th>
-                <th className="border p-2">DOB</th>
-                <th className="border p-2">College Name</th>
-                <th className="border p-2">Duration</th>
-                <th className="border p-2">Aadhar No.</th>
-                <th className="border p-2">Address</th>
-                <th className="border p-2">Details</th>
-                <th className="border p-2">Delete</th>
+                  <th className="border p-2">No</th>
+                <th className="border p-1">Name</th>
+                <th className="border p-1">Mobile</th>
+                <th className="border p-1">Email</th>
+                <th className="border p-1">DOB</th>
+                <th className="border p-1">College</th>
+                <th className="border p-1">Duration</th>
+                <th className="border p-1">Aadhar</th>
+                <th className="border p-1">Address</th>
+                <th className="border p-1">Update</th>
+                <th className="border p-1">Delete</th>
               </tr>
             </thead>
             <tbody>
               {currentRecords.map((rec, i) => (
-                <tr key={i} className="text-center">
-                  <td className="border p-2">
-                    {rec.name} {rec.middleName} {rec.lastName}
-                  </td>
-                  <td className="border p-2">{rec.mobile}</td>
-                  <td className="border p-2">{rec.email}</td>
-                  <td className="border p-2">
-                    {new Date(rec.dob).toLocaleDateString()}
-                  </td>
-                  <td className="border p-2">{rec.college}</td>
-                  <td className="border p-2">
-                    {new Date(rec.durationStart).toLocaleDateString()} →{" "}
-                    {new Date(rec.durationEnd).toLocaleDateString()}
-                  </td>
-                  <td className="border p-2">{rec.aadhar}</td>
-                  <td className="border p-2">{rec.address}</td>
-
-                  <td className="border p-2">
+                <tr key={i} className="text-center text-xs">
+                  <td className="border p-1">{ i + 1}</td>
+                  <td className="border p-1">{rec.name} {rec.middleName} {rec.lastName}</td>
+                  <td className="border p-1">{rec.mobile}</td>
+                  <td className="border p-1">{rec.email}</td>
+                  <td className="border p-1">{new Date(rec.dob).toLocaleDateString()}</td>
+                  <td className="border p-1">{rec.college}</td>
+                  <td className="border p-1">{new Date(rec.durationStart).toLocaleDateString()} → {new Date(rec.durationEnd).toLocaleDateString()}</td>
+                  <td className="border p-1">{rec.aadhar}</td>
+                  <td className="border p-1">{rec.address}</td>
+                  <td className="border p-1">
                     <button
                       onClick={() => navigate(`/admin/update/${rec._id}`)}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
-                     text-sm font-medium text-gray-900 rounded-lg group 
-                     bg-gradient-to-br from-cyan-500 to-blue-500 
-                     group-hover:from-cyan-500 group-hover:to-blue-500 
-                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
-                     focus:ring-cyan-200 dark:focus:ring-cyan-800"
+                      className="px-2 py-1 bg-blue-500 text-white rounded text-xs"
                     >
-                      <span
-                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
-                           bg-white dark:bg-gray-900 rounded-md 
-                           group-hover:bg-transparent group-hover:dark:bg-transparent"
-                      >
                       Update
-                      </span>
                     </button>
                   </td>
-
-                  <td className="border p-2">
+                  <td className="border p-1">
                     <button
                       onClick={() => handleDelete(rec)}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
-                     text-sm font-medium text-gray-900 rounded-lg group 
-                     bg-gradient-to-br from-red-500 to-pink-500 
-                     group-hover:from-red-500 group-hover:to-pink-500 
-                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
-                     focus:ring-red-200 dark:focus:ring-red-800"
+                      className="px-2 py-1 bg-red-500 text-white rounded text-xs"
                     >
-                      <span
-                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
-                           bg-white dark:bg-gray-900 rounded-md 
-                           group-hover:bg-transparent group-hover:dark:bg-transparent"
-                      >
-                        Delete
-                      </span>
+                      Delete
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
+        </div>
 
+        {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-4 space-x-2">
+          <div className="flex justify-center items-center mt-2 gap-1 flex-wrap">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
+              className="px-2 py-1 border rounded bg-gray-200 disabled:opacity-50 text-xs"
             >
               Prev
             </button>
-
             {Array.from({ length: totalPages }, (_, i) => (
               <button
-                key={i + 1}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 border rounded-lg ${
-                  currentPage === i + 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100"
-                }`}
+                key={i+1}
+                onClick={() => setCurrentPage(i+1)}
+                className={`px-2 py-1 border rounded text-xs ${currentPage === i+1 ? "bg-blue-500 text-white" : "bg-gray-100"}`}
               >
-                {i + 1}
+                {i+1}
               </button>
             ))}
-
             <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
+              className="px-2 py-1 border rounded bg-gray-200 disabled:opacity-50 text-xs"
             >
               Next
             </button>
