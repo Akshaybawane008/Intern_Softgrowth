@@ -32,8 +32,8 @@ const ActiveIntern = ({ tasks }) => {
   const totalPages = Math.ceil(filteredTasks.length / recordsPerPage);
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
+    <div className="flex flex-col items-center bg-gray-100 ">
+      <div className="bg-white shadow-lg rounded-2xl p-4 w-full">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Active Intern Tasks
         </h2>

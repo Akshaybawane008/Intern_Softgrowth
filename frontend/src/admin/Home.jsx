@@ -129,7 +129,7 @@ const Home = () => {
       </div>
 
       {/* Conditional rendering */}
-      <div className="p-6">
+      <div className="px-6">
         {activeTab === "Total" && <TotalIntern tasks={tasks} records={records} />}
         {activeTab === "new" && <ActiveIntern tasks={tasks} />}
         {activeTab === "inprogress" && <InprogessIntern tasks={tasks} />}

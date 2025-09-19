@@ -68,8 +68,8 @@ const TotalIntern = () => {
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   return (
-    <div className="flex justify-center items-start bg-gray-100 p-2">
-      <div className="bg-white shadow-lg rounded-2xl p-2 w-full max-w-6xl overflow-auto">
+    <div className="w-full flex justify-center items-start bg-gray-100">
+      <div className="bg-white shadow-lg rounded-2xl p-4 w-full overflow-auto">
         <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
 
         {/* Search + Rows per page */}
@@ -77,7 +77,7 @@ const TotalIntern = () => {
           <input
             type="text"
             placeholder="Search by name, email, or mobile..."
-            className="border p-2 rounded-lg w-72"
+            className="border p-2 rounded-lg  placeholder:text-sm w-1/2"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
