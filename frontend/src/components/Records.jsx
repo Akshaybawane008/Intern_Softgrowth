@@ -1,48 +1,42 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Records = () => {
-
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
 
-  // Fetch data from backend API
+  // Fetch data
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users"); // backend API
+        const response = await fetch("http://localhost:4000/api/users");
         const data = await response.json();
-        console.log("userData = ", data);
         setRecords(data);
       } catch (error) {
         console.error("Error fetching records:", error);
       }
     };
-
     fetchRecords();
   }, []);
 
-  // ✅ Delete handler
+  // Delete handler
   const handleDelete = async (rec) => {
-    if (!window.confirm(`Are you sure you want to delete ${rec.name} ${rec.lastName}?`)) {
-      return;
-    }
+    if (!window.confirm(`Delete ${rec.name} ${rec.lastName}?`)) return;
 
     try {
-      // Call backend delete API (assuming you use rec._id as unique ID)
-      const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, {method: "DELETE" });
-
+      const response = await fetch(
+        `http://localhost:4000/api/users/${rec._id}`,
+        { method: "DELETE" }
+      );
 
       if (response.ok) {
-        alert(`Details of ${rec.name} ${rec.lastName} deleted successfully`);
-        // update state locally
+        alert(`Deleted ${rec.name} ${rec.lastName}`);
         setRecords((prev) => prev.filter((r) => r._id !== rec._id));
       } else {
         alert("Failed to delete record");
-        console.log(response)
       }
     } catch (error) {
       console.error("Error deleting record:", error);
@@ -50,7 +44,7 @@ const Records = () => {
     }
   };
 
-  // Search code
+  // Search + filter
   const filteredRecords = records
     .filter((rec) => {
       const fullName = `${rec.name || ""} ${rec.middleName || ""} ${
@@ -76,13 +70,15 @@ const Records = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
-        <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
+      <div className="bg-white shadow-lg rounded-2xl p-6 w-full">
+        <h2 className="text-xl font-bold mb-4 text-center">Intern Records</h2>
+
+        {/* Search + Rows per page */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
           <input
             type="text"
             placeholder="Search by name, email, or mobile..."
-            className="border p-2 rounded-lg w-100 mb-4"
+            className="border p-2 rounded-lg w-full md:w-1/2"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -90,8 +86,8 @@ const Records = () => {
             }}
           />
 
-          <div className="flex justify-end mb-3">
-            <label className="mr-2 font-medium mt-2">Rows per page:</label>
+          <div className="flex items-center gap-2">
+            <label className="font-medium">Rows:</label>
             <select
               value={recordsPerPage}
               onChange={(e) => {
@@ -109,94 +105,74 @@ const Records = () => {
           </div>
         </div>
 
+        {/* Table */}
         {currentRecords.length === 0 ? (
           <p className="text-center text-gray-600">No records found.</p>
         ) : (
-          <table className="w-full border border-gray-300">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="border p-2">Name</th>
-                <th className="border p-2">Mobile No.</th>
-                <th className="border p-2">Email</th>
-                <th className="border p-2">DOB</th>
-                <th className="border p-2">College Name</th>
-                <th className="border p-2">Duration</th>
-                <th className="border p-2">Aadhar No.</th>
-                <th className="border p-2">Address</th>
-                <th className="border p-2">Details</th>
-                <th className="border p-2">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecords.map((rec, i) => (
-                <tr key={i} className="text-center">
-                  <td className="border p-2">
-                    {rec.name} {rec.middleName} {rec.lastName}
-                  </td>
-                  <td className="border p-2">{rec.mobile}</td>
-                  <td className="border p-2">{rec.email}</td>
-                  <td className="border p-2">
-                    {new Date(rec.dob).toLocaleDateString()}
-                  </td>
-                  <td className="border p-2">{rec.college}</td>
-                  <td className="border p-2">
-                    {new Date(rec.durationStart).toLocaleDateString()} →{" "}
-                    {new Date(rec.durationEnd).toLocaleDateString()}
-                  </td>
-                  <td className="border p-2">{rec.aadhar}</td>
-                  <td className="border p-2">{rec.address}</td>
-
-                  <td className="border p-2">
-                    <button
-                      onClick={() => navigate(`/admin/update/${rec._id}`)}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
-                     text-sm font-medium text-gray-900 rounded-lg group 
-                     bg-gradient-to-br from-cyan-500 to-blue-500 
-                     group-hover:from-cyan-500 group-hover:to-blue-500 
-                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
-                     focus:ring-cyan-200 dark:focus:ring-cyan-800"
-                    >
-                      <span
-                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
-                           bg-white dark:bg-gray-900 rounded-md 
-                           group-hover:bg-transparent group-hover:dark:bg-transparent"
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-300 text-sm">
+              <thead className="bg-gray-200 text-gray-700">
+                <tr>
+                  <th className="border p-2">Name</th>
+                  <th className="border p-2">Mobile</th>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">DOB</th>
+                  <th className="border p-2">College</th>
+                  <th className="border p-2">Duration</th>
+                  <th className="border p-2">Aadhar</th>
+                  <th className="border p-2">Address</th>
+                  <th className="border p-2">Update</th>
+                  <th className="border p-2">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRecords.map((rec, i) => (
+                  <tr key={i} className="text-center">
+                    <td className="border p-2">
+                      {rec.name} {rec.middleName} {rec.lastName}
+                    </td>
+                    <td className="border p-2">{rec.mobile}</td>
+                    <td className="border p-2">{rec.email}</td>
+                    <td className="border p-2">
+                      {new Date(rec.dob).toLocaleDateString()}
+                    </td>
+                    <td className="border p-2">{rec.college}</td>
+                    <td className="border p-2">
+                      {new Date(rec.durationStart).toLocaleDateString()} →{" "}
+                      {new Date(rec.durationEnd).toLocaleDateString()}
+                    </td>
+                    <td className="border p-2">{rec.aadhar}</td>
+                    <td className="border p-2">{rec.address}</td>
+                    <td className="border p-2">
+                      <button
+                        onClick={() => navigate(`/admin/update/${rec._id}`)}
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                       >
-                      Update
-                      </span>
-                    </button>
-                  </td>
-
-                  <td className="border p-2">
-                    <button
-                      onClick={() => handleDelete(rec)}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden 
-                     text-sm font-medium text-gray-900 rounded-lg group 
-                     bg-gradient-to-br from-red-500 to-pink-500 
-                     group-hover:from-red-500 group-hover:to-pink-500 
-                     hover:text-white dark:text-white focus:ring-4 focus:outline-none 
-                     focus:ring-red-200 dark:focus:ring-red-800"
-                    >
-                      <span
-                        className="relative px-5 py-2.5 transition-all ease-in duration-75 
-                           bg-white dark:bg-gray-900 rounded-md 
-                           group-hover:bg-transparent group-hover:dark:bg-transparent"
+                        Update
+                      </button>
+                    </td>
+                    <td className="border p-2">
+                      <button
+                        onClick={() => handleDelete(rec)}
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                       >
                         Delete
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
+        {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-4 space-x-2">
+          <div className="flex justify-center items-center mt-4 gap-2">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
+              className="px-3 py-1 border rounded bg-gray-200 disabled:opacity-50"
             >
               Prev
             </button>
@@ -205,7 +181,7 @@ const Records = () => {
               <button
                 key={i + 1}
                 onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 border rounded-lg ${
+                className={`px-3 py-1 border rounded ${
                   currentPage === i + 1
                     ? "bg-blue-500 text-white"
                     : "bg-gray-100"
@@ -220,7 +196,7 @@ const Records = () => {
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
               disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
+              className="px-3 py-1 border rounded bg-gray-200 disabled:opacity-50"
             >
               Next
             </button>

@@ -11,10 +11,13 @@ const ActiveIntern = ({ tasks }) => {
   useEffect(() => {
     const filtered = tasks
       .filter((task) => task.statusbar === "new")
-      .filter((task) =>
-        task.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.assignTask?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.assignedTo?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      .filter(
+        (task) =>
+          task.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          task.assignTask?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          task.assignedTo?.name
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
     setFilteredTasks(filtered);
   }, [tasks, searchTerm]);
@@ -22,13 +25,18 @@ const ActiveIntern = ({ tasks }) => {
   // Pagination
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredTasks.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = filteredTasks.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
   const totalPages = Math.ceil(filteredTasks.length / recordsPerPage);
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center">Active Intern Tasks</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Active Intern Tasks
+        </h2>
 
         {/* Search and rows per page */}
         <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
@@ -74,45 +82,54 @@ const ActiveIntern = ({ tasks }) => {
 
                   <th className="border p-2">Due Date</th>
                   <th className="border p-2">Attachments</th>
-                      <th className="border p-2">Status</th>
-                       <th className="border p-2">Details</th>
+                  <th className="border p-2">Status</th>
+                  <th className="border p-2">Details</th>
                 </tr>
               </thead>
               <tbody>
                 {currentRecords.map((task, i) => (
-                  <tr key={task._id || i} className="text-center hover:bg-gray-50">
-                    <td className="border p-2">{i + 1}</td>
-                    <td className="border p-2">{task.assignedTo?.name || "N/A"}</td>
-                    <td className="border p-2">{task.assignTask || task.title || "-"}</td>
-                    <td className="border p-2">
-                      {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "N/A"}
-                    </td>
-                    <td className="border p-2">
-                      {task.attachments && task.attachments.length > 0 ? (
-                        task.attachments.map((file, idx) => (
-                          <a
-                            key={idx}
-                            href={file}
-                            className="text-blue-500 underline block"
-                            download
-                          >
-                            {file.split("/").pop()}
-                          </a>
-                        ))
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-          <td className="border p-2 capitalize">{task.statusbar || "-"}</td>
-          
- <td className="border px-4 py-2">
-                  <button
-                    onClick={() => navigate(`/admin/task/${task._id}`)}
-                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  <tr
+                    key={task._id || i}
+                    className="text-center hover:bg-gray-50"
                   >
-                    View 
-                  </button>
-                </td>
+                    <td className="border p-2">{i + 1}</td>
+                    <td className="border p-2">
+                      {task.assignedTo?.name || "N/A"}
+                    </td>
+                    <td className="border p-2">
+                      {task.assignTask || task.title || "-"}
+                    </td>
+                    <td className="border p-2">
+                      {task.dueDate
+                        ? new Date(task.dueDate).toLocaleDateString()
+                        : "N/A"}
+                    </td>
+                    <td className="border p-2">
+                      {task.attachments && task.attachments.length > 0
+                        ? task.attachments.map((file, idx) => (
+                            <a
+                              key={idx}
+                              href={file}
+                              className="text-blue-500 underline block"
+                              download
+                            >
+                              {file.split("/").pop()}
+                            </a>
+                          ))
+                        : "-"}
+                    </td>
+                    <td className="border p-2 capitalize">
+                      {task.statusbar || "-"}
+                    </td>
+
+                    <td className="border px-4 py-2">
+                      <button
+                        onClick={() => navigate(`/admin/task/${task._id}`)}
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                      >
+                        View
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -136,7 +153,9 @@ const ActiveIntern = ({ tasks }) => {
                 key={i + 1}
                 onClick={() => setCurrentPage(i + 1)}
                 className={`px-3 py-1 border rounded-lg ${
-                  currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-100"
+                  currentPage === i + 1
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100"
                 }`}
               >
                 {i + 1}
@@ -144,7 +163,9 @@ const ActiveIntern = ({ tasks }) => {
             ))}
 
             <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
               className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
             >

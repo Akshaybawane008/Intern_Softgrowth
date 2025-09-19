@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ for redirect
 import axios from "axios";
 import { DollarSign, Share2, ThumbsUp, Star } from "lucide-react";
-
 import ActiveIntern from "../components/homeComponents/ActiveIntern";
 import PassoutIntern from "../components/homeComponents/PassoutIntern";
 import InprogessIntern from "../components/homeComponents/InprogessIntern";
-import Records from "../components/Records";
+
+import TotalIntern from "../components/homeComponents/TotalIntern";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("Total");
@@ -72,7 +72,7 @@ const Home = () => {
       label: "Total Intern",
       value: total,
       icon: <DollarSign className="w-5 h-5" />,
-      bg: "bg-blue-900 text-white",
+      bg: "bg-white text-white",
     },
     {
       key: "new",
@@ -130,7 +130,7 @@ const Home = () => {
 
       {/* Conditional rendering */}
       <div className="p-6">
-        {activeTab === "Total" && <Records tasks={tasks} records={records} />}
+        {activeTab === "Total" && <TotalIntern tasks={tasks} records={records} />}
         {activeTab === "new" && <ActiveIntern tasks={tasks} />}
         {activeTab === "inprogress" && <InprogessIntern tasks={tasks} />}
         {activeTab === "completed" && <PassoutIntern tasks={tasks} />}
