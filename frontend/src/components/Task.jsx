@@ -52,7 +52,6 @@ const Task = () => {
       formData.append("remark", remark);
       formData.append("deadline", deadline);
 
-      // Send student IDs, not names
       const studentIds = selectedOptions
         .map((opt) => {
           const student = students.find(
@@ -62,9 +61,8 @@ const Task = () => {
         })
         .filter(Boolean);
 
-      formData.append("assignedTo", studentIds.join(",")); // backend splits string to array
+      formData.append("assignedTo", studentIds.join(","));
 
-      // Attach files
       for (let i = 0; i < attachments.length; i++) {
         formData.append("attachments", attachments[i]);
       }
@@ -76,9 +74,7 @@ const Task = () => {
       const response = await fetch("http://localhost:4000/api/intern/task", {
         method: "POST",
         body: formData,
-        headers: {
-          auth: token, // ✅ add token
-        },
+        headers: { auth: token },
       });
 
       const data = await response.json();
@@ -98,10 +94,10 @@ const Task = () => {
   };
 
   return (
-    <div className="mt-[80px]">
+    <div className=" min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900 transition-colors p-6">
       <form
         onSubmit={handleSubmit}
-        className="w-auto max-w-[600px] p-6 bg-gray-50 shadow-xl mx-auto"
+        className="w-full max-w-[600px] p-6 shadow-xl rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-colors"
       >
         <h2 className="text-2xl font-semibold text-center mb-5">
           Assign Tasks
@@ -115,6 +111,7 @@ const Task = () => {
             value={selectedOptions}
             onChange={handleChange}
             renderValue={(selected) => selected.join(", ")}
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             {students.map((student) => (
               <MenuItem
@@ -133,7 +130,7 @@ const Task = () => {
           value={taskText}
           onChange={(e) => setTaskText(e.target.value)}
           placeholder="Assign a Task"
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
           required
         />
 
@@ -141,7 +138,7 @@ const Task = () => {
           type="file"
           multiple
           onChange={handleFileChange}
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
         />
 
         <input
@@ -149,7 +146,7 @@ const Task = () => {
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
           placeholder="Remark"
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
           required
         />
 
@@ -157,13 +154,13 @@ const Task = () => {
           type="date"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
           required
         />
 
         <button
           type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 w-full py-2.5 rounded-lg"
+          className="text-white bg-blue-700 dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-700 w-full py-2.5 rounded-lg transition-colors"
         >
           Submit
         </button>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Home,
   LogOut,
@@ -7,6 +7,8 @@ import {
   TextSearch,
   BookOpenCheck,
   FileText,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { Link, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Registrationform from "../components/Registrationform";
@@ -18,7 +20,6 @@ import TaskDetails from "../pages/intern/TaskDetails";
 import UpdateRegistraion from "../admin/UpdateRegistration";
 import UpdateTask from "../components/UpdateTask";
 
-// Example extra pages
 const HomePage = () => (
   <h1 className="text-2xl">
     <HomeP />
@@ -27,44 +28,42 @@ const HomePage = () => (
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark" || true // default dark
+  );
   const navigate = useNavigate();
 
+  // Apply dark mode class when state changes
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
   const handleLogout = () => {
-    localStorage.removeItem("auth"); // clear auth
-    navigate("/login"); // redirect to login
+    localStorage.removeItem("auth");
+    navigate("/login");
   };
 
   const menuItems = [
     { name: "Home", icon: <Home size={20} />, link: "/admin/home" },
-    {
-      name: "Assign Task",
-      icon: <BookOpenCheck size={20} />,
-      link: "/admin/task",
-    },
-    {
-      name: "Task Records",
-      icon: <FileText size={20} />,
-      link: "/admin/taskrecords",
-    },
-    {
-      name: "Registration",
-      icon: <UserPlus size={20} />,
-      link: "/admin/registration",
-    },
-    {
-      name: "Intern Records",
-      icon: <TextSearch size={20} />,
-      link: "/admin/records",
-    },
+    { name: "Assign Task", icon: <BookOpenCheck size={20} />, link: "/admin/task" },
+    { name: "Task Records", icon: <FileText size={20} />, link: "/admin/taskrecords" },
+    { name: "Registration", icon: <UserPlus size={20} />, link: "/admin/registration" },
+    { name: "Intern Records", icon: <TextSearch size={20} />, link: "/admin/records" },
   ];
 
   return (
-    <div className="flex ">
+    <div className="flex">
       {/* Sidebar */}
       <div
         className={`${
           isOpen ? "w-60" : "w-20"
-        } fixed top-0 left-0 h-screen bg-gray-50 text-black transition-all duration-300 p-4 flex flex-col justify-between`}
+        } fixed top-0 left-0 h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white transition-all duration-300 p-4 flex flex-col justify-between`}
       >
         {/* Top Section */}
         <div>
@@ -73,13 +72,11 @@ const Sidebar = () => {
               isOpen ? "justify-between" : "justify-center"
             }`}
           >
-            {/* Sidebar Heading */}
-            {isOpen && (
-              <h2 className="text-xl font-bold text-center">Softgrowth</h2>
-            )}
-
-            {/* Toggle Button */}
-            <button className="text-black" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen && <h2 className="text-xl font-bold">Softgrowth</h2>}
+            <button
+              className="text-black dark:text-white"
+              onClick={() => setIsOpen(!isOpen)}
+            >
               <Menu />
             </button>
           </div>
@@ -87,10 +84,10 @@ const Sidebar = () => {
           {/* Menu Items */}
           <ul className="space-y-4">
             {menuItems.map((item, index) => (
-              <li className="" key={index}>
+              <li key={index}>
                 <Link
                   to={item.link}
-                  className="flex items-center gap-3 cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+                  className="flex items-center gap-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg"
                 >
                   {item.icon}
                   {isOpen && <span>{item.name}</span>}
@@ -100,8 +97,18 @@ const Sidebar = () => {
           </ul>
         </div>
 
-        {/* Bottom Section - Logout */}
-        <div>
+        {/* Bottom Section */}
+        <div className="space-y-2">
+          {/* Dark/Light Toggle */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="flex items-center gap-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg w-full"
+          >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            {isOpen && <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>}
+          </button>
+
+          {/* Logout */}
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 cursor-pointer hover:bg-red-600 p-2 rounded-lg w-full"
@@ -114,12 +121,11 @@ const Sidebar = () => {
 
       {/* Main Content */}
       <div
-        className={`flex-1 bg-gray-100 min-h-screen transition-all duration-300 ${
+        className={`flex-1 bg-gray-100 dark:bg-gray-800 text-black dark:text-white min-h-screen transition-all duration-300 ${
           isOpen ? "ml-60" : "ml-20"
         }`}
       >
         <Routes>
-          {/* Default redirect: /admin → /admin/home */}
           <Route path="/" element={<Navigate to="home" replace />} />
           <Route path="home" element={<HomePage />} />
           <Route path="registration" element={<Registrationform />} />
@@ -129,7 +135,6 @@ const Sidebar = () => {
           <Route path="task/:id" element={<TaskDetails />} />
           <Route path="/update/:id" element={<UpdateRegistraion />} />
           <Route path="/update/task/:id" element={<UpdateTask />} />
-
         </Routes>
       </div>
     </div>

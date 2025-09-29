@@ -23,8 +23,7 @@ const IntenRecord = () => {
         headers: { auth: token },
       })
       .then((response) => {
-        console.log("all tasks fetched successfully:", response.data.tasks);
-        setTasks(response.data.tasks); // ✅ set tasks not user
+        setTasks(response.data.tasks); // ✅ set tasks
         setLoading(false);
       })
       .catch((error) => {
@@ -34,10 +33,9 @@ const IntenRecord = () => {
   }, [navigate]);
 
   if (loading) {
-    return <p className="p-4">Loading...</p>;
+    return <p className="p-4 text-gray-700 dark:text-gray-200">Loading...</p>;
   }
 
-  // ✅ filter tasks by searchTerm (student name, task, remark, status)
   const filteredTasks = tasks.filter((task) =>
     [task.assignedTo?.name, task.assignTask, task.remark, task.statusbar]
       .filter(Boolean)
@@ -45,38 +43,40 @@ const IntenRecord = () => {
   );
 
   return (
-    <div className="p-6 w-[1200px] max-w-full">
-      <h2 className="text-xl font-bold mb-4">Assigned Tasks</h2>
+    <div className="p-6 w-[1200px] max-w-full bg-gray-100 dark:bg-gray-900 transition-colors rounded-md">
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Assigned Tasks</h2>
 
-      {/* ✅ search input */}
+      {/* ✅ Search input */}
       <input
         type="text"
         placeholder="Search by student, task, remark or status..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 mb-4 w-1/2 rounded"
+        className="border p-2 mb-4 w-1/2 rounded bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-700"
       />
 
-      <table className="table-auto w-full border-collapse border border-gray-300">
+      <table className="table-auto w-full border-collapse border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-gray-300 px-4 py-2">no</th>
-            <th className="border border-gray-300 px-4 py-2">Student</th>
-            <th className="border border-gray-300 px-4 py-2">Task</th>
-            <th className="border border-gray-300 px-4 py-2">File</th>
-            <th className="border border-gray-300 px-4 py-2">Remark</th>
-            <th className="border border-gray-300 px-4 py-2">Date</th>
-            <th className="border border-gray-300 px-4 py-2">Status</th>
-            <th className="border border-gray-300 px-4 py-2">Details</th>
+          <tr className="bg-gray-200 dark:bg-gray-700">
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">No</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">Student</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">Task</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">File</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">Remark</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">Date</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">Status</th>
+            <th className="border border-gray-300 dark:border-gray-600 px-4 py-2">Details</th>
           </tr>
         </thead>
         <tbody>
           {filteredTasks.length > 0 ? (
             filteredTasks.map((task, index) => (
-              <tr key={task._id || index}>
+              <tr key={task._id || index} className="hover:bg-gray-100 dark:hover:bg-gray-800">
                 <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{task.assignedTo && task.assignedTo.length > 0? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
-                  : "-"}
+                <td className="border px-4 py-2">
+                  {task.assignedTo && task.assignedTo.length > 0
+                    ? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                    : "-"}
                 </td>
                 <td className="border px-4 py-2">{task.assignTask || "-"}</td>
                 <td className="border px-4 py-2">
@@ -97,13 +97,9 @@ const IntenRecord = () => {
                 </td>
                 <td className="border px-4 py-2">{task.remark || "-"}</td>
                 <td className="border px-4 py-2">
-                  {task.deadline
-                    ? new Date(task.deadline).toLocaleDateString()
-                    : "-"}
+                  {task.deadline ? new Date(task.deadline).toLocaleDateString() : "-"}
                 </td>
-                <td className="border px-4 py-2">
-                  {task.statusbar ? task.statusbar : "-"}
-                </td>
+                <td className="border px-4 py-2">{task.statusbar || "-"}</td>
                 <td className="border px-4 py-2">
                   <button
                     onClick={() => navigate(`/intern/task/${task._id}`)}
@@ -116,7 +112,7 @@ const IntenRecord = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="text-center py-4 border">
+              <td colSpan="8" className="text-center py-4 border">
                 No tasks found
               </td>
             </tr>

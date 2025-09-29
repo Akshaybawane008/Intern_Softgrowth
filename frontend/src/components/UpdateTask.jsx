@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import { useParams, useNavigate } from "react-router-dom";
 
 const UpdateTask = () => {
-  const { id } = useParams(); // Task ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -15,9 +15,8 @@ const UpdateTask = () => {
   const [remark, setRemark] = useState("");
   const [deadline, setDeadline] = useState("");
   const [attachments, setAttachments] = useState([]);
-  const [oldAttachments, setOldAttachments] = useState([]); // preview existing files
+  const [oldAttachments, setOldAttachments] = useState([]);
 
-  // ✅ Fetch students
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -32,7 +31,6 @@ const UpdateTask = () => {
     fetchStudents();
   }, []);
 
-  // ✅ Fetch task details for prefill
   useEffect(() => {
     const fetchTask = async () => {
       try {
@@ -47,16 +45,11 @@ const UpdateTask = () => {
 
         if (data.success) {
           const task = data.task;
-
           setTaskText(task.assignTask || "");
           setRemark(task.remark || "");
           setDeadline(task.deadline ? task.deadline.split("T")[0] : "");
-
-          // Prefill assigned students
           const assignedNames = task.assignedTo.map((s) => `${s.name} ${s.lastName}`);
           setSelectedOptions(assignedNames);
-
-          // Show existing attachments if backend returns them
           setOldAttachments(task.attachments || []);
         }
       } catch (err) {
@@ -66,20 +59,15 @@ const UpdateTask = () => {
     fetchTask();
   }, [id]);
 
-  // ✅ Handle student selection
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+    const { target: { value } } = event;
     setSelectedOptions(typeof value === "string" ? value.split(",") : value);
   };
 
-  // ✅ Handle new file uploads
   const handleFileChange = (e) => {
     setAttachments(e.target.files);
   };
 
-  // ✅ Handle update
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -94,19 +82,15 @@ const UpdateTask = () => {
       formData.append("remark", remark);
       formData.append("deadline", deadline);
 
-      // Send student IDs, not names
       const studentIds = selectedOptions
         .map((opt) => {
-          const student = students.find(
-            (s) => `${s.name} ${s.lastName}` === opt
-          );
+          const student = students.find((s) => `${s.name} ${s.lastName}` === opt);
           return student?._id;
         })
         .filter(Boolean);
 
-      formData.append("assignedTo", studentIds.join(",")); // backend splits string
+      formData.append("assignedTo", studentIds.join(","));
 
-      // Attach new files
       for (let i = 0; i < attachments.length; i++) {
         formData.append("attachments", attachments[i]);
       }
@@ -115,14 +99,11 @@ const UpdateTask = () => {
       const parsed = authData ? JSON.parse(authData) : null;
       const token = parsed?.token;
 
-      const response = await fetch(
-        `http://localhost:4000/api/intern/task/update/${id}`,
-        {
-          method: "PUT",
-          body: formData,
-          headers: { auth: token },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/api/intern/task/update/${id}`, {
+        method: "PUT",
+        body: formData,
+        headers: { auth: token },
+      });
 
       const data = await response.json();
       console.log("Task updated:", data);
@@ -140,10 +121,10 @@ const UpdateTask = () => {
   };
 
   return (
-    <div className="mt-[80px]">
+    <div className="max-w-full flex justify-center items-start bg-gray-100 dark:bg-gray-900 transition-colors p-6">
       <form
         onSubmit={handleSubmit}
-        className="w-auto max-w-[600px] p-6 bg-gray-50 shadow-xl mx-auto"
+        className="w-auto max-w-[600px] p-6 bg-white dark:bg-gray-800 shadow-xl rounded-xl text-gray-900 dark:text-white transition-colors"
       >
         <h2 className="text-2xl font-semibold text-center mb-5">
           Update Task
@@ -157,6 +138,7 @@ const UpdateTask = () => {
             value={selectedOptions}
             onChange={handleChange}
             renderValue={(selected) => selected.join(", ")}
+            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             {students.map((student) => (
               <MenuItem
@@ -175,11 +157,10 @@ const UpdateTask = () => {
           value={taskText}
           onChange={(e) => setTaskText(e.target.value)}
           placeholder="Assign a Task"
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
           required
         />
 
-        {/* Show old attachments */}
         {oldAttachments.length > 0 && (
           <div className="mb-5">
             <p className="font-semibold">Existing Attachments:</p>
@@ -190,7 +171,7 @@ const UpdateTask = () => {
                     href={`http://localhost:4000/uploads/${file}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 underline"
+                    className="text-blue-600 dark:text-blue-400 underline"
                   >
                     {file}
                   </a>
@@ -204,7 +185,7 @@ const UpdateTask = () => {
           type="file"
           multiple
           onChange={handleFileChange}
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
         />
 
         <input
@@ -212,7 +193,7 @@ const UpdateTask = () => {
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
           placeholder="Remark"
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
           required
         />
 
@@ -220,20 +201,20 @@ const UpdateTask = () => {
           type="date"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
-          className="block w-full mb-5 p-2 border-b-2 border-gray-300"
+          className="block w-full mb-5 p-2 border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white transition-colors"
           required
         />
 
         <div className="flex justify-between mt-6">
           <button
             onClick={() => navigate("/admin/taskrecords")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            className="bg-green-600 dark:bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
           >
             Update
           </button>

@@ -20,7 +20,6 @@ const TotalIntern = () => {
         console.error("Error fetching records:", error);
       }
     };
-
     fetchRecords();
   }, []);
 
@@ -40,7 +39,6 @@ const TotalIntern = () => {
         setRecords((prev) => prev.filter((r) => r._id !== rec._id));
       } else {
         alert("Failed to delete record");
-        console.log(response);
       }
     } catch (error) {
       console.error("Error deleting record:", error);
@@ -52,7 +50,6 @@ const TotalIntern = () => {
   const filteredRecords = records
     .filter((rec) => {
       const fullName = `${rec.name || ""} ${rec.middleName || ""} ${rec.lastName || ""}`.toLowerCase();
-
       return (
         fullName.includes(searchTerm.toLowerCase()) ||
         rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -68,16 +65,19 @@ const TotalIntern = () => {
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   return (
-    <div className="w-full flex justify-center items-start bg-gray-100">
-      <div className="bg-white shadow-lg rounded-2xl p-4 w-full overflow-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Intern Records</h2>
+    <div className="w-full flex justify-center items-start bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-4 w-full overflow-auto">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">
+          Intern Records
+        </h2>
 
         {/* Search + Rows per page */}
         <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
           <input
             type="text"
             placeholder="Search by name, email, or mobile..."
-            className="border p-2 rounded-lg  placeholder:text-sm w-1/2"
+            className="border p-2 rounded-lg placeholder:text-sm w-1/2 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -86,14 +86,15 @@ const TotalIntern = () => {
           />
 
           <div className="flex justify-end mb-3">
-            <label className="mr-2 font-medium mt-2">Rows per page:</label>
+            <label className="mr-2 font-medium mt-2 dark:text-gray-200">Rows per page:</label>
             <select
               value={recordsPerPage}
               onChange={(e) => {
                 setRecordsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="border p-2 rounded-lg"
+              className="border p-2 rounded-lg bg-white dark:bg-gray-700 
+                         text-gray-900 dark:text-gray-100"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -106,10 +107,10 @@ const TotalIntern = () => {
 
         {/* Table */}
         {currentRecords.length === 0 ? (
-          <p className="text-center text-gray-600">No records found.</p>
+          <p className="text-center text-gray-600 dark:text-gray-300">No records found.</p>
         ) : (
-          <table className="w-full border border-gray-300 text-sm">
-            <thead className="bg-gray-200">
+          <table className="w-full border border-gray-300 dark:border-gray-600 text-sm">
+            <thead className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
               <tr>
                 <th className="border p-2">Name</th>
                 <th className="border p-2">Mobile No.</th>
@@ -125,10 +126,8 @@ const TotalIntern = () => {
             </thead>
             <tbody>
               {currentRecords.map((rec, i) => (
-                <tr key={i} className="text-center">
-                  <td className="border p-2">
-                    {rec.name} {rec.middleName} {rec.lastName}
-                  </td>
+                <tr key={i} className="text-center text-gray-900 dark:text-gray-100">
+                  <td className="border p-2">{rec.name} {rec.middleName} {rec.lastName}</td>
                   <td className="border p-2">{rec.mobile}</td>
                   <td className="border p-2">{rec.email}</td>
                   <td className="border p-2">{new Date(rec.dob).toLocaleDateString()}</td>
@@ -143,32 +142,22 @@ const TotalIntern = () => {
                   <td className="border p-2">
                     <button
                       onClick={() => navigate(`/admin/update/${rec._id}`)}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 
-                      overflow-hidden text-sm font-medium text-gray-900 rounded-lg group 
-                      bg-gradient-to-br from-cyan-500 to-blue-500 
-                      group-hover:from-cyan-500 group-hover:to-blue-500 
-                      hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
+                      className="px-4 py-2 text-sm rounded-lg 
+                                 bg-gradient-to-br from-cyan-500 to-blue-500 
+                                 text-white hover:opacity-90"
                     >
-                      <span className="relative px-4 py-2 transition-all ease-in duration-75 
-                        bg-white rounded-md group-hover:bg-transparent">
-                        Update
-                      </span>
+                      Update
                     </button>
                   </td>
 
                   <td className="border p-2">
                     <button
                       onClick={() => handleDelete(rec)}
-                      className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 
-                      overflow-hidden text-sm font-medium text-gray-900 rounded-lg group 
-                      bg-gradient-to-br from-red-500 to-pink-500 
-                      group-hover:from-red-500 group-hover:to-pink-500 
-                      hover:text-white focus:ring-4 focus:outline-none focus:ring-red-200"
+                      className="px-4 py-2 text-sm rounded-lg 
+                                 bg-gradient-to-br from-red-500 to-pink-500 
+                                 text-white hover:opacity-90"
                     >
-                      <span className="relative px-4 py-2 transition-all ease-in duration-75 
-                        bg-white rounded-md group-hover:bg-transparent">
-                        Delete
-                      </span>
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -183,7 +172,8 @@ const TotalIntern = () => {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
+              className="px-3 py-1 border rounded-lg bg-gray-200 dark:bg-gray-700 
+                         text-gray-900 dark:text-gray-100 disabled:opacity-50"
             >
               Prev
             </button>
@@ -192,9 +182,11 @@ const TotalIntern = () => {
               <button
                 key={i + 1}
                 onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 border rounded-lg ${
-                  currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-100"
-                }`}
+                className={`px-3 py-1 border rounded-lg 
+                  ${currentPage === i + 1 
+                    ? "bg-blue-500 text-white" 
+                    : "bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100"
+                  }`}
               >
                 {i + 1}
               </button>
@@ -203,7 +195,8 @@ const TotalIntern = () => {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded-lg bg-gray-200 disabled:opacity-50"
+              className="px-3 py-1 border rounded-lg bg-gray-200 dark:bg-gray-700 
+                         text-gray-900 dark:text-gray-100 disabled:opacity-50"
             >
               Next
             </button>

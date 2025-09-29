@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { Home, History, LogOut, Menu } from "lucide-react";
+import { Home, History, LogOut, Menu, Moon, Sun } from "lucide-react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import IntenRecord from "./InternRecord";
-import InterHome from "./InterHome"; // ✅ import your home component
-import TaskDetails from "./TaskDetails"; // ✅ import TaskDetails component
+import InterHome from "./InterHome";
+import TaskDetails from "./TaskDetails";
 
 const InternSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [user, setUser] = useState(null);
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark" || true
+  );
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,6 +19,18 @@ const InternSidebar = () => {
     navigate("/login");
   };
 
+  // Apply theme & persist to localStorage
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
+  // Fetch user profile
   useEffect(() => {
     const authData = localStorage.getItem("auth");
     const parsed = authData ? JSON.parse(authData) : null;
@@ -51,7 +66,7 @@ const InternSidebar = () => {
       <div
         className={`${
           isOpen ? "w-60" : "w-20"
-        } bg-gray-900 text-white h-screen flex flex-col justify-between transition-all duration-300 fixed md:relative`}
+        } bg-gray-100 dark:bg-gray-900 text-black dark:text-white h-screen flex flex-col justify-between transition-all duration-300 fixed md:relative`}
       >
         <div>
           {/* Toggle Button */}
@@ -63,7 +78,7 @@ const InternSidebar = () => {
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-3 p-4 border-b border-gray-700">
+          <div className="flex items-center gap-3 p-4 border-b border-gray-300 dark:border-gray-700">
             <img
               src={`https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}`}
               alt="Profile"
@@ -74,7 +89,7 @@ const InternSidebar = () => {
                 <h2 className="font-semibold text-sm">
                   {user ? `${user.name} ${user.lastName}` : "Loading..."}
                 </h2>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {user ? user.role : "Fetching..."}
                 </p>
               </div>
@@ -87,7 +102,7 @@ const InternSidebar = () => {
               <li
                 key={index}
                 onClick={() => navigate(item.link)}
-                className="flex items-center gap-3 cursor-pointer hover:bg-gray-700 p-2 rounded-lg"
+                className="flex items-center gap-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg"
               >
                 {item.icon}
                 {isOpen && <span>{item.name}</span>}
@@ -96,11 +111,21 @@ const InternSidebar = () => {
           </ul>
         </div>
 
-        {/* Logout */}
-        <div className="p-4 border-t border-gray-700">
+        {/* Bottom Section */}
+        <div className="p-4 border-gray-300 dark:border-gray-700 space-y-2">
+          {/* Dark/Light Toggle */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="flex items-center gap-3 w-full text-left hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg"
+          >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            {isOpen && <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>}
+          </button>
+
+          {/* Logout */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full text-left hover:bg-gray-700 p-2 rounded-lg"
+            className="flex items-center gap-3 w-full text-left hover:bg-red-600 p-2 rounded-lg"
           >
             <LogOut size={20} />
             {isOpen && <span>Logout</span>}
@@ -109,14 +134,12 @@ const InternSidebar = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-20 md:ml-0 p-6">
+      <div className="flex-1 ml-20 md:ml-0 p-6 bg-gray-50 dark:bg-gray-800 text-black dark:text-white transition-all duration-300">
         <Routes>
           <Route path="/" element={<Navigate to="home" replace />} />
           <Route path="home" element={<InterHome />} />
           <Route path="history" element={<IntenRecord />} />
           <Route path="task/:id" element={<TaskDetails />} />
-          {/* add history page if needed */
-          }
         </Routes>
       </div>
     </div>

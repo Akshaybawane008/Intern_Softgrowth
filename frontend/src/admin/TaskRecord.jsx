@@ -13,90 +13,96 @@ const TaskTable = () => {
     const token = parsed?.token;
 
     if (!token) {
-      navigate("/login"); // redirect if no token
+      navigate("/login");
       return;
     }
 
     axios
       .get("http://localhost:4000/api/intern/tasks", {
-        headers: { auth: token }
+        headers: { auth: token },
       })
       .then((response) => {
-        // console.log("all tasks fetched successfully:", response.data);
-        setTasks(response.data.tasks); // ✅ set tasks not user
+        setTasks(response.data.tasks);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching tasks:", error);
-        navigate("/login"); // if token invalid → go login
+        navigate("/login");
       });
   }, [navigate]);
 
-  if (loading) {
-    return <p className="p-4">Loading...</p>;
-  }
-
-
   const handleDelete = async (taskId) => {
-    //  delete method
     try {
       const authData = localStorage.getItem("auth");
       const parsed = authData ? JSON.parse(authData) : null;
       const token = parsed?.token;
       if (!token) {
-        navigate("/login"); // redirect if no token
+        navigate("/login");
         return;
       }
 
       await axios.delete(`http://localhost:4000/api/intern/task/${taskId}`, {
-        headers: { auth: token }
+        headers: { auth: token },
       });
 
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+      setTasks((prev) => prev.filter((task) => task._id !== taskId));
     } catch (error) {
       console.error("Error deleting task:", error);
-      navigate("/login"); // if token invalid → go login
+      navigate("/login");
     }
   };
 
+  if (loading) {
+    return <p className="p-4 dark:text-gray-200">Loading...</p>;
+  }
+
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Assigned Tasks</h2>
-      <table className="table-auto w-full border-collapse border border-gray-300">
+    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+        Assigned Tasks
+      </h2>
+      <table className="table-auto w-full border-collapse border border-gray-300 dark:border-gray-700">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-gray-300 px-3 py-2"></th>
-            <th className="border border-gray-300 px-3 py-2">Student</th>
-            <th className="border border-gray-300 px-3 py-2">Task</th>
-            <th className="border border-gray-300 px-3 py-2">File</th>
-            <th className="border border-gray-300 px-3 py-2">Remark</th>
-            <th className="border border-gray-300 px-3 py-2">Date</th>
-            <th className="border border-gray-300 px-3 py-2">Status</th>
-            <th className="border border-gray-300 px-3 py-2 ">Details</th>
-            <th className="border border-gray-300 px-3 py-2 ">Edit</th>
-            <th className="border border-gray-300 px-3 py-2">Delete</th>
-
-
+          <tr className="bg-gray-200 dark:bg-gray-800">
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2"></th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Student</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Task</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">File</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Remark</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Date</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Status</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Details</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Edit</th>
+            <th className="border border-gray-300 dark:border-gray-700 px-3 py-2">Delete</th>
           </tr>
         </thead>
         <tbody>
           {tasks.length > 0 ? (
             tasks.map((task, index) => (
-              <tr key={task._id || index}>
-                <td className="border px-3 py-2">{index + 1}</td>
-                <td className="border px-3 py-2">
-                  {task.assignedTo && task.assignedTo.length > 0? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+              <tr
+                key={task._id || index}
+                className="hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                  {index + 1}
+                </td>
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                  {task.assignedTo && task.assignedTo.length > 0
+                    ? task.assignedTo
+                        .map((user) => `${user.name} ${user.lastName}`)
+                        .join(", ")
                     : "-"}
                 </td>
-
-                <td className="border px-3 py-2">{task.assignTask || "-"}</td>
-                <td className="border px-3 py-2">
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                  {task.assignTask || "-"}
+                </td>
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.attachments && task.attachments.length > 0 ? (
                     task.attachments.map((file, i) => (
                       <a
                         key={i}
                         href={file}
-                        className="text-blue-500 underline block"
+                        className="text-blue-500 dark:text-blue-400 underline block"
                         download
                       >
                         {file.split("/").pop()}
@@ -106,14 +112,18 @@ const TaskTable = () => {
                     "-"
                   )}
                 </td>
-                <td className="border px-3 py-2">{task.remark || "-"}</td>
-                <td className="border px-3 py-2">
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                  {task.remark || "-"}
+                </td>
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.deadline
                     ? new Date(task.deadline).toLocaleDateString()
                     : "-"}
                 </td>
-                <td className="border px-3 py-2">{task.statusbar || "-"}</td>
-                <td className="border px-3 py-2">
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                  {task.statusbar || "-"}
+                </td>
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2">
                   <button
                     onClick={() => navigate(`/admin/task/${task._id}`)}
                     className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -121,34 +131,35 @@ const TaskTable = () => {
                     View
                   </button>
                 </td>
-                <td className="border px-3 py-2">
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2">
                   <button
                     onClick={() => navigate(`/admin/update/task/${task._id}`)}
-                    className="px-3  mx-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="px-3 mx-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
                   >
                     Update
                   </button>
-                  </td>
-                <td className="border px-3 py-2">
+                </td>
+                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2">
                   <button
                     onClick={() => handleDelete(task._id)}
-                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
                 </td>
-
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center py-4 border">
+              <td
+                colSpan="10"
+                className="text-center py-4 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+              >
                 No tasks assigned
               </td>
             </tr>
           )}
         </tbody>
-
       </table>
     </div>
   );

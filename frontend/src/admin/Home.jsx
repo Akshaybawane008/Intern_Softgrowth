@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ for redirect
+import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
 import { DollarSign, Share2, ThumbsUp, Star } from "lucide-react";
+
 import ActiveIntern from "../components/homeComponents/ActiveIntern";
 import PassoutIntern from "../components/homeComponents/PassoutIntern";
 import InprogessIntern from "../components/homeComponents/InprogessIntern";
-
 import TotalIntern from "../components/homeComponents/TotalIntern";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("Total");
-  const [records, setRecords] = useState([]); // interns
-  const [tasks, setTasks] = useState([]); // tasks
+  const [records, setRecords] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -22,45 +22,32 @@ const Home = () => {
     const token = parsed?.token;
 
     if (!token) {
-      navigate("/login"); // redirect if no token
+      navigate("/login");
       return;
     }
 
-    // ✅ Fetch interns
     axios
       .get("http://localhost:4000/api/users", {
         headers: { auth: token },
       })
-      .then((response) => {
-        console.log("Intern records fetched:", response.data);
-        setRecords(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching interns:", error);
-        navigate("/login"); // if token invalid → go login
-      });
+      .then((response) => setRecords(response.data))
+      .catch(() => navigate("/login"));
 
-    // ✅ Fetch tasks
     axios
       .get("http://localhost:4000/api/intern/tasks", {
         headers: { auth: token },
       })
       .then((response) => {
-        console.log("Tasks fetched:", response.data);
-        setTasks(response.data.tasks || []); // ensure array
+        setTasks(response.data.tasks || []);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error fetching tasks:", error);
-        navigate("/login"); // if token invalid → go login
-      });
+      .catch(() => navigate("/login"));
   }, [navigate]);
 
   if (loading) {
-    return <p className="p-6">Loading...</p>;
+    return <p className="p-6 dark:text-gray-200">Loading...</p>;
   }
 
-  // ✅ Stats → based only on tasks
   const total = records.length;
   const active = tasks.filter((t) => t.statusbar === "new").length;
   const inprogress = tasks.filter((t) => t.statusbar === "inprogress").length;
@@ -71,57 +58,45 @@ const Home = () => {
       key: "Total",
       label: "Total Intern",
       value: total,
-      icon: <DollarSign className="w-5 h-5" />,
-      bg: "bg-white text-white",
+      icon: <DollarSign className="w-5 h-5 text-blue-500 dark:text-blue-400" />,
     },
     {
       key: "new",
-      label: "New" ,
+      label: "New",
       value: active,
-      icon: <Share2 className="w-5 h-5 text-orange-500" />,
-      bg: "bg-white",
+      icon: <Share2 className="w-5 h-5 text-orange-500 dark:text-orange-400" />,
     },
     {
       key: "inprogress",
       label: "Inprogress",
       value: inprogress,
-      icon: <ThumbsUp className="w-5 h-5 text-orange-500" />,
-      bg: "bg-white",
+      icon: <ThumbsUp className="w-5 h-5 text-green-500 dark:text-green-400" />,
     },
     {
       key: "completed",
       label: "Completed",
       value: completed,
-      icon: <Star className="w-5 h-5 text-orange-500" />,
-      bg: "bg-white",
+      icon: <Star className="w-5 h-5 text-purple-500 dark:text-purple-400" />,
     },
   ];
 
   return (
-    <>
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6">
         {stats.map((item) => (
           <div
             key={item.key}
             onClick={() => setActiveTab(item.key)}
-            className={`rounded-xl shadow-md p-4 flex flex-col justify-between cursor-pointer hover:scale-105 transition ${item.bg}`}
+            className="rounded-xl shadow-md p-4 flex flex-col justify-between cursor-pointer hover:scale-105 transition bg-white dark:bg-gray-800"
           >
             <div className="flex items-center justify-between mb-2">
-              <h2
-                className={`text-sm font-medium ${
-                  item.bg.includes("bg-blue-900") ? "text-white" : "text-gray-700"
-                }`}
-              >
+              <h2 className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 {item.label}
               </h2>
               {item.icon}
             </div>
-            <p
-              className={`text-2xl font-bold ${
-                item.bg.includes("bg-blue-900") ? "text-white" : "text-gray-800"
-              }`}
-            >
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {item.value}
             </p>
           </div>
@@ -129,13 +104,13 @@ const Home = () => {
       </div>
 
       {/* Conditional rendering */}
-      <div className="px-6">
+      <div className="px-6 text-gray-900 dark:text-gray-100">
         {activeTab === "Total" && <TotalIntern tasks={tasks} records={records} />}
         {activeTab === "new" && <ActiveIntern tasks={tasks} />}
         {activeTab === "inprogress" && <InprogessIntern tasks={tasks} />}
         {activeTab === "completed" && <PassoutIntern tasks={tasks} />}
       </div>
-    </>
+    </div>
   );
 };
 
