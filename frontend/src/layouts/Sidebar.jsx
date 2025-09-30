@@ -63,7 +63,7 @@ const Sidebar = () => {
       <div
         className={`${
           isOpen ? "w-60" : "w-20"
-        } fixed top-0 left-0 h-screen bg-gray-50 dark:bg-gray-900 text-black dark:text-white transition-all duration-300 p-4 flex flex-col justify-between`}
+        } fixed top-0 left-0 h-screen bg-gray-50 dark:bg-gray-800 text-black dark:text-white transition-all duration-300 p-4 flex flex-col justify-between`}
       >
         {/* Top Section */}
         <div>
