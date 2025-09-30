@@ -32,15 +32,23 @@ const Home = () => {
       });
   }, []);
 
-  if (loading) 
-    return <p className="p-6 text-gray-700 dark:text-gray-200">Loading...</p>;
+  // ✅ Full width + height loader
+  if (loading) {
+    return (
+      <div className="flex-1 w-full min-h-screen flex justify-center items-center bg-gray-100 dark:bg-gray-900">
+        <p className="text-lg font-medium text-gray-700 dark:text-gray-200">
+          Loading...
+        </p>
+      </div>
+    );
+  }
 
   const assignedCount = tasks.filter((t) => t.statusbar === "new").length;
   const pendingCount = tasks.filter((t) => t.statusbar === "inprogress").length;
   const doneCount = tasks.filter((t) => t.statusbar === "completed").length;
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
+    <div className="flex-1 min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 p-6">
         <div onClick={() => setActiveTab("assigned")} className="cursor-pointer">
@@ -48,7 +56,11 @@ const Home = () => {
             label="New Task"
             value={assignedCount}
             icon={<ClipboardList className="w-8 h-8 text-blue-500" />}
-            bgColor={activeTab === "assigned" ? "bg-blue-100 dark:bg-blue-800" : "bg-white dark:bg-gray-800"}
+            bgColor={
+              activeTab === "assigned"
+                ? "bg-blue-100 dark:bg-blue-800"
+                : "bg-white dark:bg-gray-800"
+            }
             textColor="text-gray-800 dark:text-white"
           />
         </div>
@@ -58,7 +70,11 @@ const Home = () => {
             label="Pending Task"
             value={pendingCount}
             icon={<Clock className="w-8 h-8 text-orange-500" />}
-            bgColor={activeTab === "pending" ? "bg-orange-100 dark:bg-orange-800" : "bg-white dark:bg-gray-800"}
+            bgColor={
+              activeTab === "pending"
+                ? "bg-orange-100 dark:bg-orange-800"
+                : "bg-white dark:bg-gray-800"
+            }
             textColor="text-gray-800 dark:text-white"
           />
         </div>
@@ -68,14 +84,18 @@ const Home = () => {
             label="Done Task"
             value={doneCount}
             icon={<CheckCircle className="w-8 h-8 text-green-500" />}
-            bgColor={activeTab === "done" ? "bg-green-100 dark:bg-green-800" : "bg-white dark:bg-gray-800"}
+            bgColor={
+              activeTab === "done"
+                ? "bg-green-100 dark:bg-green-800"
+                : "bg-white dark:bg-gray-800"
+            }
             textColor="text-gray-800 dark:text-white"
           />
         </div>
       </div>
 
       {/* Task List */}
-      <div className="p-6">
+      <div >
         {activeTab === "assigned" && <AssingedTask tasks={tasks} />}
         {activeTab === "pending" && (
           <PendingTask tasks={tasks.filter((t) => t.statusbar === "inprogress")} />

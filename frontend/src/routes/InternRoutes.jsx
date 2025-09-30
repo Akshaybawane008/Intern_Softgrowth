@@ -4,7 +4,7 @@ import InternSidebar from "../pages/intern/InternSidebar";
 
 function InternRoutes() {
   return (
-    <div className="flex">
+    <div>
       <InternSidebar />
     </div>
   );

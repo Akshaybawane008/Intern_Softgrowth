@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -57,17 +57,24 @@ function TaskDetails() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg transition-colors">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">Task Details</h2>
+ // Outer background wrapper (full screen height + bg)
+<div className="min-h-screen w-full bg-gray-100 dark:bg-gray-950 flex justify-center items-start p-6">
+  {/* TaskDetails card */}
+  <div className="w-full max-w-6xl bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 transition-colors">
+    <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+      Task Details
+    </h2>
 
-      <div className="space-y-3 text-gray-800 dark:text-gray-100">
-        {/* Status Dropdown */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-800 dark:text-gray-100">
+      {/* Left Column – Task Info */}
+      <div className="space-y-3">
         <div>
           <strong>Status:</strong>
           <select
             value={task.statusbar || ""}
             onChange={handleStatusChange}
-            className="ml-2 border px-3 py-1 rounded bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600"
+            className="ml-2 border px-3 py-1 rounded bg-white dark:bg-gray-700 
+                       text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600"
           >
             <option value="new">New</option>
             <option value="inprogress">In Progress</option>
@@ -76,7 +83,8 @@ function TaskDetails() {
         </div>
 
         <p>
-          <strong>Student:</strong> {task.assignedTo?.[0]?.name} {task.assignedTo?.[0]?.lastName || "-"}
+          <strong>Student:</strong> {task.assignedTo?.[0]?.name}{" "}
+          {task.assignedTo?.[0]?.lastName || "-"}
         </p>
         <p>
           <strong>Task:</strong> {task.assignTask || "-"}
@@ -88,34 +96,37 @@ function TaskDetails() {
           <strong>Deadline:</strong>{" "}
           {task.deadline ? new Date(task.deadline).toLocaleDateString() : "-"}
         </p>
+      </div>
 
-        {/* Attachments */}
-        <div>
-          <strong>Attachments:</strong>
-          {task.attachments && task.attachments.length > 0 ? (
-            <div className="mt-3 space-y-4">
-              {task.attachments.map((file, index) => (
-                <div key={index}>
-                  <a
-                    href={`http://localhost:4000${file}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src={`http://localhost:4000${file}`}
-                      alt={`attachment-${index}`}
-                      className="w-full max-h-[500px] object-contain border rounded-lg shadow-md cursor-pointer hover:opacity-90 transition"
-                    />
-                  </a>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>-</p>
-          )}
-        </div>
+      {/* Right Column – Attachments */}
+      <div>
+        <strong>Attachments:</strong>
+        {task.attachments && task.attachments.length > 0 ? (
+          <div className="mt-3 space-y-4">
+            {task.attachments.map((file, index) => (
+              <div key={index}>
+                <a
+                  href={`http://localhost:4000${file}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={`http://localhost:4000${file}`}
+                    alt={`attachment-${index}`}
+                    className="w-full max-h-[400px] object-contain border rounded-lg shadow-md cursor-pointer hover:opacity-90 transition"
+                  />
+                </a>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>-</p>
+        )}
       </div>
     </div>
+  </div>
+</div>
+
   );
 }
 

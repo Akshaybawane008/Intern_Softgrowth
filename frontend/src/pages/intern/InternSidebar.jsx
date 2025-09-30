@@ -66,7 +66,7 @@ const InternSidebar = () => {
       <div
         className={`${
           isOpen ? "w-60" : "w-20"
-        } bg-gray-100 dark:bg-gray-900 text-black dark:text-white h-screen flex flex-col justify-between transition-all duration-300 fixed md:relative`}
+        } fixed top-0 left-0 h-screen bg-gray-100 dark:bg-gray-800 text-black dark:text-white flex flex-col justify-between transition-all duration-300  md:relative`}
       >
         <div>
           {/* Toggle Button */}
@@ -134,7 +134,7 @@ const InternSidebar = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-20 md:ml-0 p-6 bg-gray-50 dark:bg-gray-800 text-black dark:text-white transition-all duration-300">
+      <div className="flex-1 min-h-screen ml-20 md:ml-0 bg-gray-50 dark:bg-gray-100 text-black dark:text-white transition-all duration-300">
         <Routes>
           <Route path="/" element={<Navigate to="home" replace />} />
           <Route path="home" element={<InterHome />} />
