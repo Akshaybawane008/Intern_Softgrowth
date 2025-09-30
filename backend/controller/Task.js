@@ -1,9 +1,5 @@
-import mongoose from "mongoose";
 import { Task } from "../model/Task.js";
-import { publicDecrypt } from "crypto";
-import { get } from "http";
-import fs from "fs";
-import path from "path";
+
 
 //method post
 //routes
@@ -52,15 +48,15 @@ export const createTask = async (req, res) => {
 // api/intern/tasks
 export const getAllTask = async (req, res) => {
 
-    try {
-        let tasks = await Task.find().populate("assignedTo");
-        if (tasks.length === 0) {
-            return res.status(404).json({ message: "No task found", success: false })
-        }
-        res.json({ message: "All tasks fetched successfully", tasks: tasks, success: true });
-    } catch (err) {
-        res.status(400).json({ message: "Error fetching tasks", error: err.message });
+  try {
+    let tasks = await Task.find().populate("assignedTo");
+    if (tasks.length === 0) {
+      return res.status(404).json({ message: "No task found", success: false })
     }
+    res.json({ message: "All tasks fetched successfully", tasks: tasks, success: true });
+  } catch (err) {
+    res.status(400).json({ message: "Error fetching tasks", error: err.message });
+  }
 
 }
 
@@ -74,8 +70,8 @@ export const updateTaskById = async (req, res) => {
   try {
     const id = req.params.id;
     console.log("your task id :", id);
- console.log("request body:", req.body);
-    
+    console.log("request body:", req.body);
+
     const updatetask = await Task.findByIdAndUpdate(
       id,
       req.body,
@@ -104,33 +100,33 @@ export const updateTaskById = async (req, res) => {
 // method get task by id 
 // /api/intern/task/:id
 export const getTaskById = async (req, res) => {
-    const id = req.params.id;
-    console.log("your task id :", id)
-    const task = await Task.findById(id).populate("assignedTo");
-   console.log("Fetched task:", task);
-    if (!task) return res.json({ message: "task not found", success: false })
-    res.json({ message: "Task fetched successfully", task, success: true })
+  const id = req.params.id;
+  console.log("your task id :", id)
+  const task = await Task.findById(id).populate("assignedTo");
+  console.log("Fetched task:", task);
+  if (!task) return res.json({ message: "task not found", success: false })
+  res.json({ message: "Task fetched successfully", task, success: true })
 }
 // method delete task by id 
 // api/intern/task/:id
 export const deleteTaskById = async (req, res) => {
-    const id = req.params.id;
-    console.log("your task id :", id)
-    const deletetask = await Task.findByIdAndDelete(id)
-    if (!deletetask) return res.json({ message: "task not found", success: false })
-    res.json({ message: "Task delete successfully", deletetask, success: true })
+  const id = req.params.id;
+  console.log("your task id :", id)
+  const deletetask = await Task.findByIdAndDelete(id)
+  if (!deletetask) return res.json({ message: "task not found", success: false })
+  res.json({ message: "Task delete successfully", deletetask, success: true })
 }
 
 
-    // method get
-    // // get specific user  how many tasks that user have assigned
-    // routes 
-    // /api/intern/assignedtasks/
+// method get
+// // get specific user  how many tasks that user have assigned
+// routes 
+// /api/intern/assignedtasks/
 
 export const getAllTasksByUserId = async (req, res) => {
-   const id = req.user._id;
-   console.log("your user id :", id)
-   const tasks = await Task.find({assignedTo: id}).populate("assignedTo");
-   if (!tasks) return res.json({ message: "No tasks found for this user", success: false })
-   res.json({ message: "Tasks fetched successfully", tasks, success: true })
+  const id = req.user._id;
+  console.log("your user id :", id)
+  const tasks = await Task.find({ assignedTo: id }).populate("assignedTo");
+  if (!tasks) return res.json({ message: "No tasks found for this user", success: false })
+  res.json({ message: "Tasks fetched successfully", tasks, success: true })
 }
