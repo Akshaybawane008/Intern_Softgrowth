@@ -5,6 +5,7 @@ import axios from "axios";
 const TaskTable = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // ✅ Search state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,6 +53,34 @@ const TaskTable = () => {
     }
   };
 
+  // ✅ Filter tasks based on search term
+  const filteredTasks = tasks.filter((task) => {
+    const studentNames = task.assignedTo
+      ?.map((u) => `${u.name} ${u.lastName}`)
+      .join(", ")
+      .toLowerCase() || "";
+    const taskName = task.assignTask?.toLowerCase() || "";
+    const status = task.statusbar?.toLowerCase() || "";
+    const remark = task.remark?.toLowerCase() || "";
+    const deadline = task.deadline
+      ? new Date(task.deadline).toLocaleDateString().toLowerCase()
+      : "";
+    const attachmentNames = task.attachments
+      ?.map((file) => file.split("/").pop().toLowerCase())
+      .join(", ") || "";
+
+    const term = searchTerm.toLowerCase();
+
+    return (
+      studentNames.includes(term) ||
+      taskName.includes(term) ||
+      status.includes(term) ||
+      remark.includes(term) ||
+      deadline.includes(term) ||
+      attachmentNames.includes(term)
+    );
+  });
+
   if (loading) {
     return <p className="p-4 dark:text-gray-200">Loading...</p>;
   }
@@ -61,6 +90,16 @@ const TaskTable = () => {
       <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">
         Assigned Tasks
       </h2>
+
+      {/* ✅ Search Input */}
+      <input
+        type="text"
+        placeholder="Search by name, task, status, remark, file, or date..."
+        className="mb-4 p-2 w-1/3 border rounded hover:outline-1 outline-blue-500"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <table className="table-auto w-full border-collapse border border-gray-300 dark:border-gray-700">
         <thead>
           <tr className="bg-gray-200 dark:bg-gray-800">
@@ -77,8 +116,8 @@ const TaskTable = () => {
           </tr>
         </thead>
         <tbody>
-          {tasks.length > 0 ? (
-            tasks.map((task, index) => (
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map((task, index) => (
               <tr
                 key={task._id || index}
                 className="hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -86,14 +125,14 @@ const TaskTable = () => {
                 <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {index + 1}
                 </td>
-                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                <td className="border truncate border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.assignedTo && task.assignedTo.length > 0
                     ? task.assignedTo
                         .map((user) => `${user.name} ${user.lastName}`)
                         .join(", ")
                     : "-"}
                 </td>
-                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                <td className="border truncate border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.assignTask || "-"}
                 </td>
                 <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
@@ -112,13 +151,11 @@ const TaskTable = () => {
                     "-"
                   )}
                 </td>
-                <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                <td className="border truncate border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.remark || "-"}
                 </td>
                 <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
-                  {task.deadline
-                    ? new Date(task.deadline).toLocaleDateString()
-                    : "-"}
+                  {task.deadline ? new Date(task.deadline).toLocaleDateString() : "-"}
                 </td>
                 <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.statusbar || "-"}

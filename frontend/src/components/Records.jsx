@@ -37,12 +37,32 @@ const Records = () => {
     }
   };
 
+  // ✅ Filter records for global search across all columns
   const filteredRecords = records
     .filter((rec) => {
+      const term = searchTerm.toLowerCase();
+
       const fullName = `${rec.name || ""} ${rec.middleName || ""} ${rec.lastName || ""}`.toLowerCase();
-      return fullName.includes(searchTerm.toLowerCase()) ||
-             rec.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             rec.mobile?.toString().includes(searchTerm);
+      const mobile = (rec.mobile || "").toString();
+      const email = (rec.email || "").toLowerCase();
+      const dob = rec.dob ? new Date(rec.dob).toLocaleDateString().toLowerCase() : "";
+      const college = (rec.college || "").toLowerCase();
+      const duration = rec.durationStart && rec.durationEnd
+        ? `${new Date(rec.durationStart).toLocaleDateString()} → ${new Date(rec.durationEnd).toLocaleDateString()}`.toLowerCase()
+        : "";
+      const aadhar = (rec.aadhar || "").toString().toLowerCase();
+      const address = (rec.address || "").toLowerCase();
+
+      return (
+        fullName.includes(term) ||
+        mobile.includes(term) ||
+        email.includes(term) ||
+        dob.includes(term) ||
+        college.includes(term) ||
+        duration.includes(term) ||
+        aadhar.includes(term) ||
+        address.includes(term)
+      );
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -60,7 +80,7 @@ const Records = () => {
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
           <input
             type="text"
-            placeholder="Search by name, email, or mobile..."
+            placeholder="Search Student, email, college, mobile, aadhar, address..."
             className="border py-1 px-2 rounded w-full md:w-1/3 placeholder:text-xs bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
             value={searchTerm}
             onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
@@ -96,35 +116,47 @@ const Records = () => {
               </tr>
             </thead>
             <tbody>
-              {currentRecords.map((rec, i) => (
-                <tr key={i} className="text-center text-xs text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td className="border p-1 da rk:border-gray-600">{ i + 1}</td>
-                  <td className="border p-1 dark:border-gray-600">{rec.name} {rec.middleName} {rec.lastName}</td>
-                  <td className="border p-1 dark:border-gray-600">{rec.mobile}</td>
-                  <td className="border p-1 dark:border-gray-600">{rec.email}</td>
-                  <td className="border p-1 dark:border-gray-600">{new Date(rec.dob).toLocaleDateString()}</td>
-                  <td className="border p-1 dark:border-gray-600">{rec.college}</td>
-                  <td className="border p-1 dark:border-gray-600">{new Date(rec.durationStart).toLocaleDateString()} → {new Date(rec.durationEnd).toLocaleDateString()}</td>
-                  <td className="border p-1 dark:border-gray-600">{rec.aadhar}</td>
-                  <td className="border p-1 dark:border-gray-600">{rec.address}</td>
-                  <td className="border p-1 dark:border-gray-600">
-                    <button
-                      onClick={() => navigate(`/admin/update/${rec._id}`)}
-                      className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
-                    >
-                      Update
-                    </button>
-                  </td>
-                  <td className="border p-1 dark:border-gray-600">
-                    <button
-                      onClick={() => handleDelete(rec)}
-                      className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
+              {currentRecords.length > 0 ? (
+                currentRecords.map((rec, i) => (
+                  <tr key={i} className="text-center text-xs text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td className="border p-1 dark:border-gray-600">{ indexOfFirstRecord + i + 1}</td>
+                    <td className="border p-1 dark:border-gray-600 truncate">{rec.name} {rec.middleName} {rec.lastName}</td>
+                    <td className="border p-1 dark:border-gray-600">{rec.mobile}</td>
+                    <td className="border p-1 dark:border-gray-600 truncate">{rec.email}</td>
+                    <td className="border p-1 dark:border-gray-600 truncate">{rec.dob ? new Date(rec.dob).toLocaleDateString() : ""}</td>
+                    <td className="border p-1 dark:border-gray-600 truncate">{rec.college}</td>
+                    <td className="border p-1 dark:border-gray-600 truncate">
+                      {rec.durationStart && rec.durationEnd 
+                        ? `${new Date(rec.durationStart).toLocaleDateString()} → ${new Date(rec.durationEnd).toLocaleDateString()}` 
+                        : ""}
+                    </td>
+                    <td className="border p-1 dark:border-gray-600 truncate">{rec.aadhar}</td>
+                    <td className="border p-1 dark:border-gray-600 truncate">{rec.address}</td>
+                    <td className="border p-1 dark:border-gray-600">
+                      <button
+                        onClick={() => navigate(`/admin/update/${rec._id}`)}
+                        className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+                      >
+                        Update
+                      </button>
+                    </td>
+                    <td className="border p-1 dark:border-gray-600">
+                      <button
+                        onClick={() => handleDelete(rec)}
+                        className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="11" className="text-center py-4 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
+                    No records found
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
