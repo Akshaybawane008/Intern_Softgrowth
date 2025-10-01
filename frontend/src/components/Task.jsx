@@ -1,12 +1,106 @@
-import React, { useState, useEffect } from "react";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
+import { useState, useEffect } from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { styled } from "@mui/material/styles";
+import { autocompleteClasses } from "@mui/material/Autocomplete";
+import useAutocomplete from "@mui/material/useAutocomplete";
 
+// ---------- Styled Components ----------
+const Root = styled("div")(() => ({
+  color: "rgba(0,0,0,0.85)",
+  fontSize: "14px",
+  position: "relative",
+}));
+
+const Label = styled("label")`
+  padding: 0 0 4px;
+  line-height: 1.5;
+  display: block;
+  font-weight: 500;
+`;
+
+const InputWrapper = styled("div")(() => ({
+  width: "100%",
+  border: "1px solid #d9d9d9",
+  backgroundColor: "#fff",
+  borderRadius: "4px",
+  padding: "2px",
+  display: "flex",
+  flexWrap: "wrap",
+  "&:hover": {
+    borderColor: "#40a9ff",
+  },
+  "&.focused": {
+    borderColor: "#40a9ff",
+    boxShadow: "0 0 0 2px rgb(24 144 255 / 0.2)",
+  },
+  "& input": {
+    backgroundColor: "#fff",
+    height: "30px",
+    padding: "4px 6px",
+    flexGrow: 1,
+    border: 0,
+    outline: 0,
+  },
+}));
+
+const Tag = styled("div")(() => ({
+  display: "flex",
+  alignItems: "center",
+  height: 24,
+  margin: 2,
+  backgroundColor: "#fafafa",
+  border: "1px solid #e8e8e8",
+  borderRadius: 2,
+  padding: "0 4px 0 10px",
+  "& span": {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  "& svg": {
+    fontSize: 14,
+    cursor: "pointer",
+    padding: 2,
+  },
+}));
+
+const Listbox = styled("ul")(() => ({
+  width: "100%",
+  margin: 0,
+  padding: 0,
+  position: "absolute",
+  listStyle: "none",
+  backgroundColor: "#fff",
+  overflow: "auto",
+  maxHeight: 200,
+  borderRadius: "4px",
+  boxShadow: "0 2px 8px rgb(0 0 0 / 0.15)",
+  zIndex: 1,
+  "& li": {
+    padding: "6px 12px",
+    display: "flex",
+    alignItems: "center",
+    "& span": {
+      flexGrow: 1,
+    },
+  },
+  "& li[aria-selected='true']": {
+    backgroundColor: "#fafafa",
+    fontWeight: 600,
+    "& svg": {
+      color: "#1890ff",
+    },
+  },
+  [`& li.${autocompleteClasses.focused}`]: {
+    backgroundColor: "#e6f7ff",
+    cursor: "pointer",
+  },
+}));
+
+// ---------- Main Task Component ----------
 const Task = () => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
   const [students, setStudents] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const [taskText, setTaskText] = useState("");
   const [remark, setRemark] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -23,16 +117,27 @@ const Task = () => {
         console.error("Error fetching students:", error);
       }
     };
-
     fetchStudents();
   }, []);
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedOptions(typeof value === "string" ? value.split(",") : value);
-  };
+  // ---------- Autocomplete Hook ----------
+  const {
+    getRootProps,
+    getInputProps,
+    getListboxProps,
+    getOptionProps,
+    getTagProps,
+    groupedOptions,
+    value,
+    focused,
+    setAnchorEl,
+  } = useAutocomplete({
+    multiple: true,
+    options: students,
+    value: selectedOptions,
+    onChange: (event, newValue) => setSelectedOptions(newValue),
+    getOptionLabel: (student) => `${student.name} ${student.lastName}`, // ✅ Suggest by name
+  });
 
   const handleFileChange = (e) => {
     setAttachments(e.target.files);
@@ -52,15 +157,7 @@ const Task = () => {
       formData.append("remark", remark);
       formData.append("deadline", deadline);
 
-      const studentIds = selectedOptions
-        .map((opt) => {
-          const student = students.find(
-            (s) => `${s.name} ${s.lastName}` === opt
-          );
-          return student?._id;
-        })
-        .filter(Boolean);
-
+      const studentIds = selectedOptions.map((s) => s._id).filter(Boolean);
       formData.append("assignedTo", studentIds.join(","));
 
       for (let i = 0; i < attachments.length; i++) {
@@ -94,36 +191,47 @@ const Task = () => {
   };
 
   return (
-    <div className=" min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900 transition-colors p-6">
+    <div className="min-h-screen flex justify-center items-start bg-gray-100 dark:bg-gray-900 transition-colors p-6">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-[600px] p-6 shadow-xl rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-colors"
       >
-        <h2 className="text-2xl font-semibold text-center mb-5">
-          Assign Tasks
-        </h2>
+        <h2 className="text-2xl font-semibold text-center mb-5">Assign Tasks</h2>
 
-        <FormControl fullWidth className="mb-5">
-          <InputLabel id="multi-select-label">Select Student</InputLabel>
-          <Select
-            labelId="multi-select-label"
-            multiple
-            value={selectedOptions}
-            onChange={handleChange}
-            renderValue={(selected) => selected.join(", ")}
-            className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-          >
-            {students.map((student) => (
-              <MenuItem
-                key={student._id}
-                value={`${student.name} ${student.lastName}`}
-              >
-                {student.name} {student.lastName} ({student.email})
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        {/* ✅ Student Autocomplete */}
+        <Root className="mb-5">
+          <div {...getRootProps()}>
+            <Label>Select Students</Label>
+            <InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
+              {value.map((option, index) => (
+                <Tag key={index} {...getTagProps({ index })}>
+                  <span>
+                    {option.name} {option.lastName}
+                  </span>
+                  <CloseIcon
+                    onClick={getTagProps({ index }).onDelete}
+                    fontSize="small"
+                  />
+                </Tag>
+              ))}
+              <input {...getInputProps()} placeholder="Type a name..." />
+            </InputWrapper>
+          </div>
+          {groupedOptions.length > 0 ? (
+            <Listbox {...getListboxProps()}>
+              {groupedOptions.map((option, index) => (
+                <li key={option._id} {...getOptionProps({ option, index })}>
+                  <span>
+                    {option.name} {option.lastName} ({option.email})
+                  </span>
+                  <CheckIcon fontSize="small" />
+                </li>
+              ))}
+            </Listbox>
+          ) : null}
+        </Root>
 
+        {/* ✅ Rest of form remains same */}
         <textarea
           rows="4"
           name="task"
