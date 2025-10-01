@@ -97,14 +97,14 @@ const ActiveIntern = ({ tasks }) => {
                     className="text-center hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
                   >
                     <td className="border p-2 dark:border-gray-600">{i + 1}</td>
-                      <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
+                      <td className="border truncate border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
                   {task.assignedTo && task.assignedTo.length > 0
                     ? task.assignedTo
                         .map((user) => `${user.name} ${user.lastName}`)
                         .join(", ")
                     : "-"}
                 </td>
-                    <td className="border p-2 dark:border-gray-600">
+                    <td className="border truncate p-2 dark:border-gray-600">
                       {task.assignTask || task.title || "-"}
                     </td>
                     <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
