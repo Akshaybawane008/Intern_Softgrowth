@@ -55,7 +55,8 @@ const Home = () => {
           <StatCard
             label="New Task"
             value={assignedCount}
-            icon={<ClipboardList className="w-8 h-8 text-blue-500" />}
+            
+            icon={<User className="w-8 h-8 text-blue-500" />}
             bgColor={
               activeTab === "assigned"
                 ? "bg-blue-100 dark:bg-blue-800"

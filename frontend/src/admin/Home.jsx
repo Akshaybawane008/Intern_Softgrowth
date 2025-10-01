@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import axios from "axios";
-import { DollarSign, Share2, ThumbsUp, Star } from "lucide-react";
+import { User, Layers, NotepadText, CheckCheck } from "lucide-react";
 
 import ActiveIntern from "../components/homeComponents/ActiveIntern";
 import PassoutIntern from "../components/homeComponents/PassoutIntern";
@@ -58,25 +58,25 @@ const Home = () => {
       key: "Total",
       label: "Total Intern",
       value: total,
-      icon: <DollarSign className="w-5 h-5 text-blue-500 dark:text-blue-400" />,
+      icon: <User className="w-10  h-10 text-gray-600 dark:text-gray-300" />,
     },
     {
       key: "new",
       label: "New",
       value: active,
-      icon: <Share2 className="w-5 h-5 text-orange-500 dark:text-orange-400" />,
+      icon: <Layers className="w-10 h-10 text-blue-500 dark:text-blue-400" />,
     },
     {
       key: "inprogress",
       label: "Inprogress",
       value: inprogress,
-      icon: <ThumbsUp className="w-5 h-5 text-green-500 dark:text-green-400" />,
+      icon: <NotepadText className="w-10 h-10 text-yellow-500 dark:text-yellow-400" />,
     },
     {
       key: "completed",
       label: "Completed",
       value: completed,
-      icon: <Star className="w-5 h-5 text-purple-500 dark:text-purple-400" />,
+      icon: <CheckCheck className="w-10 h-10 text-green-500 dark:text-green-400" />,
     },
   ];
 
