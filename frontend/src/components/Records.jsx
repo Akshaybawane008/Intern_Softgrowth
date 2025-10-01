@@ -98,7 +98,7 @@ const Records = () => {
             <tbody>
               {currentRecords.map((rec, i) => (
                 <tr key={i} className="text-center text-xs text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td className="border p-1 dark:border-gray-600">{ i + 1}</td>
+                  <td className="border p-1 da rk:border-gray-600">{ i + 1}</td>
                   <td className="border p-1 dark:border-gray-600">{rec.name} {rec.middleName} {rec.lastName}</td>
                   <td className="border p-1 dark:border-gray-600">{rec.mobile}</td>
                   <td className="border p-1 dark:border-gray-600">{rec.email}</td>

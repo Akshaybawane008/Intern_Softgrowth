@@ -8,11 +8,18 @@ const TotalIntern = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
 
+  // ✅ Auth token
+  const authData = localStorage.getItem("auth");
+  const parsed = authData ? JSON.parse(authData) : null;
+  const token = parsed?.token;
   // Fetch data from backend API
   useEffect(() => {
+     
     const fetchRecords = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users"); // backend API
+        const response = await fetch("http://localhost:4000/api/users", {
+          headers: { auth: token },
+        });
         const data = await response.json();
         console.log("userData = ", data);
         setRecords(data);
@@ -31,7 +38,9 @@ const TotalIntern = () => {
 
     try {
       const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, {
+        headers: { auth: token },
         method: "DELETE",
+
       });
 
       if (response.ok) {

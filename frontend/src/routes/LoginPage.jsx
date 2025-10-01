@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -20,40 +21,47 @@ const LoginPage = () => {
   }, []);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    try {
-      const res = await axios.post(
-        "http://localhost:4000/api/users/login",
-        { email, password },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      const { token, role } = res.data;
-      
-      if (!token) {
-        alert("Login failed: No token received");
-        return;
-      }
+  e.preventDefault();
+  setIsLoading(true);
 
-      if (isAdmin && role !== "admin") {
-        alert("You must log in as Admin!");
-        return;
-      }
-      
-      if (!isAdmin && role !== "intern") {
-        alert("You must log in as Intern!");
-        return;
-      }
+  try {
+    const res = await axios.post(
+      "http://localhost:4000/api/users/login",
+      { email, password }, // ✅ No token sent here
+      { headers: { "Content-Type": "application/json" } }
+    );
+    console.log("Login response:", res.data);
 
-      localStorage.setItem("auth", JSON.stringify({ token, role }));
-      navigate(role === "admin" ? "/admin/home" : "/intern/home");
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
-    } finally {
-      setIsLoading(false);
+    const { token, role } = res.data;
+
+    if (!token) {
+      alert("Login failed: No token received");
+      return;
     }
-  };
+
+    if (isAdmin && role !== "admin") {
+      alert("You must log in as Admin!");
+      return;
+    }
+
+    if (!isAdmin && role !== "intern") {
+      alert("You must log in as Intern!");
+      return;
+    }
+
+    // ✅ Store token after login
+    localStorage.setItem("auth", JSON.stringify({ token, role }));
+
+    // ✅ Redirect
+    navigate(role === "admin" ? "/admin/home" : "/intern/home");
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
   return (
     <div className="min-h-screen flex bg-white">

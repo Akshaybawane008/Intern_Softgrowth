@@ -150,7 +150,10 @@ export const updateUserById = async (req, res) => {
 
 export const deleteUserById = async (req, res) => {
     try {
+
+       console.log("Deleting user with ID:", req.params.id);
         const deletedUser = await User.findByIdAndDelete(req.params.id);
+        console.log("deleted user =", deletedUser);
 
         if (!deletedUser) {
 
@@ -178,7 +181,8 @@ export const loginUser = async (req, res) => {
     let { email, password } = req.body;
 
     if (!email || !password) return res.json({ message: "email and password required", success: "false" })
-    let user = await User.findOne({ email })
+    let user = await User.findOne({ email }) ;
+    console.log("user found =", user);
     if (!user) return res.json({ message: "user doesnot exist", success: false })
 
     let valid = await bcrypt.compare(password, user.password)
