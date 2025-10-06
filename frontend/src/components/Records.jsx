@@ -1,25 +1,45 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Search,
+  FilterList,
+  Edit,
+  Delete,
+  Person,
+  Email,
+  Phone,
+  School,
+  CalendarToday,
+  Assignment,
+  Home,
+  Badge,
+  Refresh
+} from "@mui/icons-material";
 
 const Records = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRecords = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/users");
-        const data = await response.json();
-        setRecords(data);
-      } catch (error) {
-        console.error("Error fetching records:", error);
-      }
-    };
     fetchRecords();
   }, []);
+
+  const fetchRecords = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:4000/api/users");
+      const data = await response.json();
+      setRecords(data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching records:", error);
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (rec) => {
     if (!window.confirm(`Are you sure you want to delete ${rec.name} ${rec.lastName}?`)) return;
@@ -37,7 +57,7 @@ const Records = () => {
     }
   };
 
-  // ✅ Filter records for global search across all columns
+  // Filter records for global search across all columns
   const filteredRecords = records
     .filter((rec) => {
       const term = searchTerm.toLowerCase();
@@ -71,128 +91,282 @@ const Records = () => {
   const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400 text-lg font-medium">Loading records...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-100 dark:bg-gray-900 p-4 transition-colors">
-      <div className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-4 w-full max-w-[1600px]">
-        <h2 className="text-xl font-bold mb-4 text-center text-gray-900 dark:text-white">Intern Records</h2>
-
-        {/* Search & Rows per page */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
-          <input
-            type="text"
-            placeholder="Search Student, email, college, mobile, aadhar, address..."
-            className="border py-1 px-2 rounded w-full md:w-1/3 placeholder:text-xs bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            value={searchTerm}
-            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-          />
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-700 dark:text-gray-300">Rows:</label>
-            <select
-              value={recordsPerPage}
-              onChange={(e) => { setRecordsPerPage(Number(e.target.value)); setCurrentPage(1); }}
-              className="border p-1 text-sm rounded bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            >
-              {[5,10,15,20,25].map((n) => <option key={n} value={n}>{n}</option>)}
-            </select>
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-gray-300 dark:border-gray-600">
-            <thead className="bg-gray-200 dark:bg-gray-700 text-xs text-gray-900 dark:text-gray-100">
-              <tr>
-                <th className="border p-2 dark:border-gray-600">No</th>
-                <th className="border p-1 dark:border-gray-600">Name</th>
-                <th className="border p-1 dark:border-gray-600">Mobile</th>
-                <th className="border p-1 dark:border-gray-600">Email</th>
-                <th className="border p-1 dark:border-gray-600">DOB</th>
-                <th className="border p-1 dark:border-gray-600">College</th>
-                <th className="border p-1 dark:border-gray-600">Duration</th>
-                <th className="border p-1 dark:border-gray-600">Aadhar</th>
-                <th className="border p-1 dark:border-gray-600">Address</th>
-                <th className="border p-1 dark:border-gray-600">Update</th>
-                <th className="border p-1 dark:border-gray-600">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecords.length > 0 ? (
-                currentRecords.map((rec, i) => (
-                  <tr key={i} className="text-center text-xs text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="border p-1 dark:border-gray-600">{ indexOfFirstRecord + i + 1}</td>
-                    <td className="border p-1 dark:border-gray-600 truncate">{rec.name} {rec.middleName} {rec.lastName}</td>
-                    <td className="border p-1 dark:border-gray-600">{rec.mobile}</td>
-                    <td className="border p-1 dark:border-gray-600 truncate">{rec.email}</td>
-                    <td className="border p-1 dark:border-gray-600 truncate">{rec.dob ? new Date(rec.dob).toLocaleDateString() : ""}</td>
-                    <td className="border p-1 dark:border-gray-600 truncate">{rec.college}</td>
-                    <td className="border p-1 dark:border-gray-600 truncate">
-                      {rec.durationStart && rec.durationEnd 
-                        ? `${new Date(rec.durationStart).toLocaleDateString()} → ${new Date(rec.durationEnd).toLocaleDateString()}` 
-                        : ""}
-                    </td>
-                    <td className="border p-1 dark:border-gray-600 truncate">{rec.aadhar}</td>
-                    <td className="border p-1 dark:border-gray-600 truncate">{rec.address}</td>
-                    <td className="border p-1 dark:border-gray-600">
-                      <button
-                        onClick={() => navigate(`/admin/update/${rec._id}`)}
-                        className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
-                      >
-                        Update
-                      </button>
-                    </td>
-                    <td className="border p-1 dark:border-gray-600">
-                      <button
-                        onClick={() => handleDelete(rec)}
-                        className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="11" className="text-center py-4 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-                    No records found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-2 gap-1 flex-wrap">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-2 py-1 border rounded bg-gray-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-50 text-xs"
-            >
-              Prev
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
+    <div className="min-h-screen p-4 pt-0 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+      {/* Main Content Container */}
+      <div className="w-full px-4 py-6">
+        <div className="max-w-full mx-auto">
+          
+          {/* Header Section */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
+            <div className="w-full lg:w-auto">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Intern Records
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
+                Manage and view all intern information
+              </p>
+            </div>
+            <div className="flex gap-3 mt-4 lg:mt-0 w-full lg:w-auto">
               <button
-                key={i+1}
-                onClick={() => setCurrentPage(i+1)}
-                className={`px-2 py-1 border rounded text-xs ${
-                  currentPage === i+1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                }`}
+                onClick={fetchRecords}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 w-full lg:w-auto justify-center"
               >
-                {i+1}
+                <Refresh className="text-lg" />
+                Refresh
               </button>
-            ))}
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-2 py-1 border rounded bg-gray-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-50 text-xs"
-            >
-              Next
-            </button>
+            </div>
           </div>
-        )}
+
+    
+         
+
+          {/* Search and Filter Bar */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 mb-6 border border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Search Input */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+                <input
+                  type="text"
+                  placeholder="Search by name, email, college, mobile, aadhar..."
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  value={searchTerm}
+                  onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                />
+              </div>
+
+              {/* Records per page and pagination info */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <label className="text-sm text-gray-700 dark:text-gray-300 font-medium">Show:</label>
+                  <select
+                    value={recordsPerPage}
+                    onChange={(e) => { setRecordsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                    className="border border-gray-300 dark:border-gray-600 p-2 text-sm rounded-lg bg-white dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    {[5, 10, 15, 20, 25].map((n) => <option key={n} value={n}>{n} records</option>)}
+                  </select>
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Showing {indexOfFirstRecord + 1}-{Math.min(indexOfLastRecord, filteredRecords.length)} of {filteredRecords.length}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Records Table Container */}
+          <div className="w-full overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                      <th className="px-4 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-1/4">
+                        Intern Information
+                      </th>
+                      <th className="px-4 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-1/5">
+                        Contact Details
+                      </th>
+                      <th className="px-4 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-1/4">
+                        Education & Duration
+                      </th>
+                      <th className="px-4 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-1/6">
+                        Identification
+                      </th>
+                      <th className="px-4 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider w-1/6">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {currentRecords.length > 0 ? (
+                      currentRecords.map((rec, index) => (
+                        <tr 
+                          key={rec._id} 
+                          className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                        >
+                          {/* Personal Information */}
+                          <td className="px-4 py-4">
+                            <div className="flex items-start gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Person className="text-white text-sm" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1 truncate">
+                                  {rec.name} {rec.middleName} {rec.lastName}
+                                </h3>
+                                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                  <CalendarToday className="text-xs" />
+                                  {rec.dob ? new Date(rec.dob).toLocaleDateString() : "No DOB"}
+                                </div>
+                                {rec.address && (
+                                  <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400">
+                                    <Home className="text-xs mt-0.5 flex-shrink-0" />
+                                    <span className="line-clamp-2 break-words">{rec.address}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* Contact Details */}
+                          <td className="px-4 py-4">
+                            <div className="space-y-2">
+                              {rec.email && (
+                                <div className="flex items-center gap-2">
+                                  <Email className="text-gray-400 text-xs flex-shrink-0" />
+                                  <span className="text-xs text-gray-900 dark:text-white truncate">{rec.email}</span>
+                                </div>
+                              )}
+                              {rec.mobile && (
+                                <div className="flex items-center gap-2">
+                                  <Phone className="text-gray-400 text-xs flex-shrink-0" />
+                                  <span className="text-xs text-gray-900 dark:text-white truncate">{rec.mobile}</span>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Education & Duration */}
+                          <td className="px-4 py-4">
+                            <div className="space-y-2">
+                              {rec.college && (
+                                <div className="flex items-center gap-2">
+                                  <School className="text-gray-400 text-xs flex-shrink-0" />
+                                  <span className="text-xs text-gray-900 dark:text-white truncate">{rec.college}</span>
+                                </div>
+                              )}
+                              {rec.durationStart && rec.durationEnd && (
+                                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                                  <Assignment className="text-xs flex-shrink-0" />
+                                  <span className="truncate">
+                                    {new Date(rec.durationStart).toLocaleDateString()} → {new Date(rec.durationEnd).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Identification */}
+                          <td className="px-4 py-4">
+                            {rec.aadhar && (
+                              <div className="flex items-center gap-2">
+                                <Badge className="text-gray-400 text-xs flex-shrink-0" />
+                                <span className="text-xs text-gray-900 dark:text-white font-mono truncate">{rec.aadhar}</span>
+                              </div>
+                            )}
+                          </td>
+
+                          {/* Actions */}
+                          <td className="px-4 py-4">
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => navigate(`/admin/update/${rec._id}`)}
+                                className="flex items-center gap-1 px-2 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors text-xs font-medium border border-blue-200 dark:border-blue-800"
+                                title="Edit Record"
+                              >
+                                <Edit className="text-xs" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDelete(rec)}
+                                className="flex items-center gap-1 px-2 py-1.5 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors text-xs font-medium border border-red-200 dark:border-red-800"
+                                title="Delete Record"
+                              >
+                                <Delete className="text-xs" />
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-12 text-center">
+                          <div className="flex flex-col items-center justify-center">
+                            <Person className="text-gray-400 text-4xl mb-3" />
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                              No records found
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-4 max-w-md text-center">
+                              {searchTerm 
+                                ? "No records match your search criteria. Try adjusting your search terms." 
+                                : "No intern records available. Add new records to get started."}
+                            </p>
+                            {searchTerm && (
+                              <button
+                                onClick={() => {
+                                  setSearchTerm("");
+                                  setCurrentPage(1);
+                                }}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                              >
+                                Clear Search
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Page {currentPage} of {totalPages}
+              </div>
+              <div className="flex gap-1 flex-wrap justify-center">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  Previous
+                </button>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                        currentPage === pageNum
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

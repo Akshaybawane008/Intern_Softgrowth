@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Search, Filter, ChevronLeft, ChevronRight, Eye, PlusCircle, Download, User } from "lucide-react";
 
 const ActiveIntern = ({ tasks }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,9 +17,9 @@ const ActiveIntern = ({ tasks }) => {
         (task) =>
           task.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           task.assignTask?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          task.assignedTo?.name
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase())
+          task.assignedTo?.some((u) =>
+            `${u.name} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+          )
       );
     setFilteredTasks(filtered);
   }, [tasks, searchTerm]);
@@ -26,35 +27,52 @@ const ActiveIntern = ({ tasks }) => {
   // Pagination
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredTasks.slice(
-    indexOfFirstRecord,
-    indexOfLastRecord
-  );
+  const currentRecords = filteredTasks.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(filteredTasks.length / recordsPerPage);
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors">
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-4 w-full">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">
-          Active Intern Tasks
-        </h2>
+    <div className="p-4">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-blue-500 rounded-lg">
+            <PlusCircle className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 dark:from-white dark:to-blue-200 bg-clip-text text-transparent">
+            Active Task
+          </h1>
+        </div>
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
+          Recently assigned tasks awaiting progress
+        </p>
+      </div>
 
-        {/* Search and rows per page */}
-        <div className="flex flex-row justify-between items-center mb-4 gap-4 flex-wrap">
-          <input
-            type="text"
-            placeholder="Search by task title, assigned name..."
-            className="border p-2 rounded-lg w-full md:w-1/3 bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
+      {/* Controls Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-4">
+        <div className="flex flex-col lg:flex-row gap-3 justify-between items-start lg:items-center">
+          {/* Search */}
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search by task title, assigned name..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 
+                       placeholder-gray-500 dark:placeholder-gray-400 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
 
-          <div className="flex justify-end mb-3">
-            <label className="mr-2 font-medium mt-2 text-gray-700 dark:text-gray-300">
-              Rows per page:
+          {/* Records per page */}
+          <div className="flex items-center gap-2 w-full lg:w-auto">
+            <Filter className="text-gray-400 w-4 h-4" />
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+              Rows:
             </label>
             <select
               value={recordsPerPage}
@@ -62,79 +80,194 @@ const ActiveIntern = ({ tasks }) => {
                 setRecordsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="border p-2 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+              className="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded-lg 
+                       bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
               <option value={15}>15</option>
+              <option value={20}>20</option>
             </select>
           </div>
         </div>
+      </div>
 
-        {/* Table */}
-        {currentRecords.length === 0 ? (
-          <p className="text-center text-gray-600 dark:text-gray-300">
-            No active tasks found.
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border border-gray-300 dark:border-gray-700">
-              <thead className="bg-gray-200 dark:bg-gray-700">
-                <tr className="text-gray-900 dark:text-gray-100">
-                  <th className="border p-2 dark:border-gray-600">No</th>
-                  <th className="border p-2 dark:border-gray-600">Assigned To</th>
-                  <th className="border p-2 dark:border-gray-600">Task Title</th>
-                  <th className="border p-2 dark:border-gray-600">Due Date</th>
-                  <th className="border p-2 dark:border-gray-600">Attachments</th>
-                  <th className="border p-2 dark:border-gray-600">Status</th>
-                  <th className="border p-2 dark:border-gray-600">Details</th>
+      {/* Table Card */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        {/* Mobile Cards */}
+        <div className="block lg:hidden">
+          {currentRecords.length === 0 ? (
+            <div className="text-center py-8">
+              <PlusCircle className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">No new tasks found</p>
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
+                All newly assigned tasks will appear here
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3 p-3">
+              {currentRecords.map((task, i) => (
+                <div key={task._id || i} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
+                        {task.assignTask || task.title || "Untitled Task"}
+                      </h3>
+                      <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
+                        <PlusCircle className="w-3 h-3" />
+                        <span>New</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => navigate(`/admin/task/${task._id}`)}
+                      className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors ml-2"
+                      title="View Details"
+                    >
+                      <Eye className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <User className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-600 dark:text-gray-400">Assigned to:</span>
+                      <span className="text-gray-900 dark:text-white font-medium">
+                        {task.assignedTo && task.assignedTo.length > 0
+                          ? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                          : "Unassigned"}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between text-sm">
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400">Due Date: </span>
+                        <span className="text-gray-900 dark:text-white">
+                          {task.deadline
+                            ? new Date(task.deadline).toLocaleDateString()
+                            : "No deadline"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {task.attachments && task.attachments.length > 0 && (
+                      <div className="text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Attachments: </span>
+                        <div className="mt-1 space-y-1">
+                          {task.attachments.map((file, idx) => (
+                            <a
+                              key={idx}
+                              href={file}
+                              className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                              download
+                            >
+                              <Download className="w-3 h-3" />
+                              {file.split("/").pop()}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden lg:block overflow-x-auto">
+          {currentRecords.length === 0 ? (
+            <div className="text-center py-8">
+              <PlusCircle className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+              <p className="text-gray-500 dark:text-gray-400">No new tasks found</p>
+              <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
+                All newly assigned tasks will appear here
+              </p>
+            </div>
+          ) : (
+            <table className="w-full min-w-full border-collapse border border-gray-300 dark:border-gray-600">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    #
+                  </th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    Assigned To
+                  </th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    Task Title
+                  </th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    Due Date
+                  </th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    Attachments
+                  </th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    Status
+                  </th>
+                  <th className="border border-gray-300 dark:border-gray-600 p-3 font-semibold text-gray-700 dark:text-gray-300 text-sm text-left">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {currentRecords.map((task, i) => (
-                  <tr
-                    key={task._id || i}
-                    className="text-center hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100"
-                  >
-                    <td className="border p-2 dark:border-gray-600">{i + 1}</td>
-                      <td className="border truncate border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
-                  {task.assignedTo && task.assignedTo.length > 0
-                    ? task.assignedTo
-                        .map((user) => `${user.name} ${user.lastName}`)
-                        .join(", ")
-                    : "-"}
-                </td>
-                    <td className="border truncate p-2 dark:border-gray-600">
+                  <tr key={task._id || i} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <td className="border border-gray-300 dark:border-gray-600 p-3 text-gray-900 dark:text-white text-sm">
+                      {indexOfFirstRecord + i + 1}
+                    </td>
+                    <td className="border border-gray-300 dark:border-gray-600 p-3 text-gray-900 dark:text-white text-sm">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-gray-400" />
+                        <span>
+                          {task.assignedTo && task.assignedTo.length > 0
+                            ? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                            : "-"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="border border-gray-300 dark:border-gray-600 p-3 text-gray-900 dark:text-white text-sm font-medium">
                       {task.assignTask || task.title || "-"}
                     </td>
-                    <td className="border border-gray-300 dark:border-gray-700 px-3 py-2 text-gray-900 dark:text-gray-100">
-                  {task.deadline
-                    ? new Date(task.deadline).toLocaleDateString()
-                    : "-"}
-                </td>
-                    <td className="border p-2 dark:border-gray-600">
-                      {task.attachments && task.attachments.length > 0
-                        ? task.attachments.map((file, idx) => (
+                    <td className="border border-gray-300 dark:border-gray-600 p-3 text-gray-900 dark:text-white text-sm">
+                      {task.deadline
+                        ? new Date(task.deadline).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td className="border border-gray-300 dark:border-gray-600 p-3 text-gray-900 dark:text-white text-sm">
+                      {task.attachments && task.attachments.length > 0 ? (
+                        <div className="space-y-1">
+                          {task.attachments.map((file, idx) => (
                             <a
                               key={idx}
                               href={file}
-                              className="text-blue-500 underline block"
+                              className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline text-xs"
                               download
                             >
+                              <Download className="w-3 h-3" />
                               {file.split("/").pop()}
                             </a>
-                          ))
-                        : "-"}
+                          ))}
+                        </div>
+                      ) : (
+                        "-"
+                      )}
                     </td>
-                    <td className="border p-2 capitalize dark:border-gray-600">
-                      {task.statusbar || "-"}
+                    <td className="border border-gray-300 dark:border-gray-600 p-3">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium">
+                        <PlusCircle className="w-3 h-3" />
+                        New
+                      </span>
                     </td>
-
-                    <td className="border px-4 py-2 dark:border-gray-600">
+                    <td className="border border-gray-300 dark:border-gray-600 p-3">
                       <button
                         onClick={() => navigate(`/admin/task/${task._id}`)}
-                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 
+                                 text-white rounded transition-colors text-xs"
                       >
+                        <Eye className="w-3 h-3" />
                         View
                       </button>
                     </td>
@@ -142,43 +275,71 @@ const ActiveIntern = ({ tasks }) => {
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-4 space-x-2">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1 border rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-50"
-            >
-              Prev
-            </button>
+          <div className="border-t border-gray-200 dark:border-gray-600 p-3">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+              <div className="text-xs text-gray-600 dark:text-gray-400">
+                Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredTasks.length)} of{" "}
+                {filteredTasks.length} new tasks
+              </div>
+              
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="p-1.5 border border-gray-300 dark:border-gray-600 rounded 
+                           bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 
+                           hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 
+                           disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
 
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 border rounded-lg ${
-                  currentPage === i + 1
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+                <div className="flex gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 border rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-50"
-            >
-              Next
-            </button>
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`w-8 h-8 border rounded text-xs font-medium transition-colors ${
+                          currentPage === pageNum
+                            ? "bg-blue-500 border-blue-500 text-white"
+                            : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="p-1.5 border border-gray-300 dark:border-gray-600 rounded 
+                           bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 
+                           hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 
+                           disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

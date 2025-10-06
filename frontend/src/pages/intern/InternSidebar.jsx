@@ -1,9 +1,24 @@
 import { useEffect, useState } from "react";
-import { Home, History, LogOut, Menu, Moon, Sun } from "lucide-react";
-import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
+import {
+  Home,
+  History,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import {
+  useNavigate,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import axios from "axios";
-import IntenRecord from "./InternRecord";
-import InterHome from "./InterHome";
+import InternRecord from "./InternRecord";
+import InternHome from "./InternHome";
 import TaskDetails from "./TaskDetails";
 
 const InternSidebar = () => {
@@ -13,6 +28,7 @@ const InternSidebar = () => {
     () => localStorage.getItem("theme") === "dark" || true
   );
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     localStorage.removeItem("auth");
@@ -60,85 +76,149 @@ const InternSidebar = () => {
     { name: "History", icon: <History size={20} />, link: "/intern/history" },
   ];
 
+  const isActive = (link) => location.pathname === link;
+
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <div
-        className={`${
-          isOpen ? "w-60" : "w-20"
-        } fixed top-0 left-0 h-screen bg-gray-100 dark:bg-gray-800 text-black dark:text-white flex flex-col justify-between transition-all duration-300  md:relative`}
+        className={`
+          ${isOpen ? "w-64" : "w-20"}
+          fixed top-0 left-0 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
+          flex flex-col justify-between transition-all duration-300 z-50
+          shadow-lg
+        `}
       >
         <div>
-          {/* Toggle Button */}
-          <div className="flex items-center justify-between p-4 md:hidden">
-            <span className="text-lg font-bold">Intern Panel</span>
-            <button onClick={() => setIsOpen(!isOpen)}>
-              <Menu size={24} />
-            </button>
-          </div>
-
-          {/* Profile */}
-          <div className="flex items-center gap-3 p-4 border-b border-gray-300 dark:border-gray-700">
-            <img
-              src={`https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}`}
-              alt="Profile"
-              className="w-10 h-10 rounded-full"
-            />
-            {isOpen && (
-              <div>
-                <h2 className="font-semibold text-sm">
-                  {user ? `${user.name} ${user.lastName}` : "Loading..."}
-                </h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {user ? user.role : "Fetching..."}
-                </p>
+          {/* Profile Section with Centered Toggle */}
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-1">
+                <div className="relative">
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}&background=3B82F6&color=ffffff&bold=true&size=128`}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-xl border-2 border-blue-200 dark:border-blue-800 shadow-sm"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+                </div>
+                {isOpen && (
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-bold text-gray-900 dark:text-white truncate text-sm bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text">
+                      {user ? `${user.name} ${user.lastName}` : "Loading..."}
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize font-medium bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full inline-block">
+                      {user ? user.role : "Fetching..."}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Toggle Button - Always Visible */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
+              >
+                {isOpen ? (
+                  <ChevronLeft
+                    size={16}
+                    className="text-gray-600 dark:text-gray-400"
+                  />
+                ) : (
+                  <ChevronRight
+                    size={16}
+                    className="text-gray-600 dark:text-gray-400"
+                  />
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* Menu */}
-          <ul className="space-y-2 p-4">
-            {menuItems.map((item, index) => (
-              <li
-                key={index}
-                onClick={() => navigate(item.link)}
-                className="flex items-center gap-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg"
-              >
-                {item.icon}
-                {isOpen && <span>{item.name}</span>}
-              </li>
-            ))}
-          </ul>
+          {/* Navigation Menu */}
+          <nav className="p-3">
+            <ul className="space-y-1">
+              {menuItems.map((item, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => navigate(item.link)}
+                    className={`
+                      w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200
+                      ${
+                        isActive(item.link)
+                          ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
+                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+                      }
+                    `}
+                  >
+                    <div
+                      className={`
+                      p-1.5 rounded-md transition-colors flex-shrink-0
+                      ${
+                        isActive(item.link)
+                          ? "bg-blue-100 dark:bg-blue-800"
+                          : "bg-gray-100 dark:bg-gray-700"
+                      }
+                    `}
+                    >
+                      {item.icon}
+                    </div>
+                    {isOpen && (
+                      <span className="font-medium text-sm">{item.name}</span>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
-        {/* Bottom Section */}
-        <div className="p-4 border-gray-300 dark:border-gray-700 space-y-2">
-          {/* Dark/Light Toggle */}
+        {/* Bottom Actions */}
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700 space-y-1">
+          {/* Theme Toggle */}
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="flex items-center gap-3 w-full text-left hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg"
+            className={`
+              w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200
+              text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white
+            `}
           >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            {isOpen && <span>{darkMode ? "Light Mode" : "Dark Mode"}</span>}
+            <div className="p-1.5 rounded-md bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+              {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </div>
+            {isOpen && (
+              <span className="font-medium text-sm">
+                {darkMode ? "Light Mode" : "Dark Mode"}
+              </span>
+            )}
           </button>
 
-          {/* Logout */}
+          {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full text-left hover:bg-red-600 p-2 rounded-lg"
+            className={`
+              w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200
+              text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20
+            `}
           >
-            <LogOut size={20} />
-            {isOpen && <span>Logout</span>}
+            <div className="p-1.5 rounded-md bg-red-100 dark:bg-red-900/30 flex-shrink-0">
+              <LogOut size={16} />
+            </div>
+            {isOpen && <span className="font-medium text-sm">Logout</span>}
           </button>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 min-h-screen ml-20 md:ml-0 bg-gray-50 dark:bg-gray-100 text-black dark:text-white transition-all duration-300">
+      {/* Main Content Area */}
+      <div
+        className={`
+        flex-1 min-h-screen transition-all duration-300
+        ${isOpen ? "ml-64" : "ml-20"}
+      `}
+      >
         <Routes>
           <Route path="/" element={<Navigate to="home" replace />} />
-          <Route path="home" element={<InterHome />} />
-          <Route path="history" element={<IntenRecord />} />
+          <Route path="home" element={<InternHome />} />
+          <Route path="history" element={<InternRecord />} />
           <Route path="task/:id" element={<TaskDetails />} />
         </Routes>
       </div>

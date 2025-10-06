@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Registrationform = () => {
+const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     middleName: "",
@@ -15,13 +15,13 @@ const Registrationform = () => {
     aadhar: "",
   });
 
-  const [errors, setErrors] = useState({}); // Validation errors
+  const [errors, setErrors] = useState({});
+  const [activeSection, setActiveSection] = useState(0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Basic validation
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "First Name is required";
@@ -41,7 +41,6 @@ const Registrationform = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Save Data (POST to API)
   const handleSave = async () => {
     if (!validate()) return;
     try {
@@ -59,7 +58,6 @@ const Registrationform = () => {
     }
   };
 
-  // Update Data (PUT to API)
   const handleUpdate = async () => {
     if (!validate()) return;
     try {
@@ -77,149 +75,192 @@ const Registrationform = () => {
     }
   };
 
+  const sections = [
+    {
+      title: "Personal Information",
+      fields: ["name", "middleName", "lastName", "mobile", "email", "dob"]
+    },
+    {
+      title: "Academic Details",
+      fields: ["college", "durationStart", "durationEnd"]
+    },
+    {
+      title: "Additional Information",
+      fields: ["address", "aadhar"]
+    }
+  ];
+
+  const getFieldComponent = (fieldName) => {
+    const commonProps = {
+      name: fieldName,
+      value: formData[fieldName],
+      onChange: handleChange,
+      className: `w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-white ${
+        errors[fieldName] 
+          ? "border-red-500 focus:border-red-500" 
+          : "border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
+      } focus:outline-none focus:ring-2 focus:ring-blue-500/20`
+    };
+
+    switch (fieldName) {
+      case "dob":
+      case "durationStart":
+      case "durationEnd":
+        return <input type="date" {...commonProps} />;
+      case "email":
+        return <input type="email" placeholder="Enter your email" {...commonProps} />;
+      case "mobile":
+        return <input type="tel" placeholder="10-digit mobile number" {...commonProps} />;
+      case "aadhar":
+        return <input type="text" placeholder="12-digit Aadhar number" {...commonProps} />;
+      case "address":
+        return <textarea placeholder="Enter your complete address" rows="3" {...commonProps} />;
+      default:
+        const placeholder = fieldName
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, str => str.toUpperCase());
+        return <input type="text" placeholder={`Enter ${placeholder}`} {...commonProps} />;
+    }
+  };
+
+  const nextSection = () => {
+    if (activeSection < sections.length - 1) {
+      setActiveSection(activeSection + 1);
+    }
+  };
+
+  const prevSection = () => {
+    if (activeSection > 0) {
+      setActiveSection(activeSection - 1);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-6 transition-colors">
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 w-full max-w-2xl text-gray-900 dark:text-white transition-colors">
-        <h2 className="text-2xl font-bold mb-6 text-center">Registration Form</h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4 transition-colors">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            Student Registration
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
+            Complete your internship registration form
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <input
-              type="text"
-              name="name"
-              placeholder="First Name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white`}
-            />
-            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-colors">
+          {/* Progress Bar */}
+          <div className="px-8 pt-8">
+            <div className="flex items-center justify-between mb-8">
+              {sections.map((section, index) => (
+                <div key={index} className="flex items-center">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300 ${
+                      index <= activeSection
+                        ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+                  <span
+                    className={`ml-3 font-medium hidden sm:block ${
+                      index <= activeSection
+                        ? "text-blue-600 dark:text-blue-400"
+                        : "text-gray-500 dark:text-gray-400"
+                    }`}
+                  >
+                    {section.title}
+                  </span>
+                  {index < sections.length - 1 && (
+                    <div
+                      className={`w-16 h-1 mx-4 transition-all duration-300 ${
+                        index < activeSection ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
+                      }`}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <input
-            type="text"
-            name="middleName"
-            placeholder="Middle Name"
-            value={formData.middleName}
-            onChange={handleChange}
-            className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
+          {/* Form Content */}
+          <div className="px-8 pb-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                {sections[activeSection].title}
+              </h2>
+              <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+            </div>
 
-          <div>
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
-          </div>
+            <div className="space-y-6">
+              {sections[activeSection].fields.map((field) => (
+                <div key={field} className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                    {field !== "middleName" && <span className="text-red-500 ml-1">*</span>}
+                  </label>
+                  {getFieldComponent(field)}
+                  {errors[field] && (
+                    <p className="text-red-500 text-sm flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      {errors[field]}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
 
-          <div>
-            <input
-              type="text"
-              name="mobile"
-              placeholder="Mobile No"
-              value={formData.mobile}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
-          </div>
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={prevSection}
+                disabled={activeSection === 0}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                  activeSection === 0
+                    ? "bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-500 text-white hover:bg-gray-600 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                }`}
+              >
+                Previous
+              </button>
 
-          <div>
-            <input
-              type="email"
-              name="email"
-              placeholder="Email ID"
-              value={formData.email}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-          </div>
-
-          <div>
-            <input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.dob && <p className="text-red-500 text-xs mt-1">{errors.dob}</p>}
-          </div>
-
-          <div>
-            <input
-              type="text"
-              name="college"
-              placeholder="College Name"
-              value={formData.college}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.college && <p className="text-red-500 text-xs mt-1">{errors.college}</p>}
-          </div>
-
-          <div>
-            <input
-              type="date"
-              name="durationStart"
-              value={formData.durationStart}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.durationStart && <p className="text-red-500 text-xs mt-1">{errors.durationStart}</p>}
-          </div>
-
-          <div>
-            <input
-              type="date"
-              name="durationEnd"
-              value={formData.durationEnd}
-              onChange={handleChange}
-              className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-            {errors.durationEnd && <p className="text-red-500 text-xs mt-1">{errors.durationEnd}</p>}
+              {activeSection === sections.length - 1 ? (
+                <div className="flex space-x-4">
+                  <button
+                    onClick={handleUpdate}
+                    className="px-8 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                  >
+                    Save & Submit
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={nextSection}
+                  className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  Continue
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="mt-4">
-          <textarea
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleChange}
-            className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-          {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
-        </div>
-
-        <div className="mt-4">
-          <input
-            type="text"
-            name="aadhar"
-            placeholder="Aadhar Number"
-            value={formData.aadhar}
-            onChange={handleChange}
-            className="border p-2 rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-          {errors.aadhar && <p className="text-red-500 text-xs mt-1">{errors.aadhar}</p>}
-        </div>
-
-        <div className="flex justify-between mt-6">
-          <button onClick={handleUpdate} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Cancel
-          </button>
-          <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            Save
-          </button>
+        {/* Footer Note */}
+        <div className="text-center mt-6 text-gray-500 dark:text-gray-400 text-sm">
+          <p>All fields marked with <span className="text-red-500">*</span> are required</p>
         </div>
       </div>
     </div>
   );
 };
 
-export default Registrationform;
+export default RegistrationForm;
