@@ -7,6 +7,7 @@ import ActiveIntern from "../components/homeComponents/ActiveIntern";
 import PassoutIntern from "../components/homeComponents/PassoutIntern";
 import InprogessIntern from "../components/homeComponents/InprogessIntern";
 import TotalIntern from "../components/homeComponents/TotalIntern";
+import Loading from "../components/Loading";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("Total");
@@ -46,12 +47,7 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300 text-lg">Loading dashboard...</p>
-        </div>
-      </div>
+      <Loading/>
     );
   }
 

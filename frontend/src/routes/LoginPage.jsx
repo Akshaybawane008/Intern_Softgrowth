@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const images = ["/soft1.jpeg", "/soft2.jpeg", "/soft3.jpeg"];
+const images = ["/soft1.jpg", "/soft2.jpg", "/soft3.jpg"];
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +12,6 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -21,47 +20,45 @@ const LoginPage = () => {
   }, []);
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
+    e.preventDefault();
+    setIsLoading(true);
 
-  try {
-    const res = await axios.post(
-      "http://localhost:4000/api/users/login",
-      { email, password }, // ✅ No token sent here
-      { headers: { "Content-Type": "application/json" } }
-    );
-    console.log("Login response:", res.data);
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/users/login",
+        { email, password }, // ✅ No token sent here
+        { headers: { "Content-Type": "application/json" } }
+      );
+      console.log("Login response:", res.data);
 
-    const { token, role } = res.data;
+      const { token, role } = res.data;
 
-    if (!token) {
-      alert("Login failed: No token received");
-      return;
+      if (!token) {
+        alert("Login failed: No token received");
+        return;
+      }
+
+      if (isAdmin && role !== "admin") {
+        alert("You must log in as Admin!");
+        return;
+      }
+
+      if (!isAdmin && role !== "intern") {
+        alert("You must log in as Intern!");
+        return;
+      }
+
+      // ✅ Store token after login
+      localStorage.setItem("auth", JSON.stringify({ token, role }));
+
+      // ✅ Redirect
+      navigate(role === "admin" ? "/admin/home" : "/intern/home");
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setIsLoading(false);
     }
-
-    if (isAdmin && role !== "admin") {
-      alert("You must log in as Admin!");
-      return;
-    }
-
-    if (!isAdmin && role !== "intern") {
-      alert("You must log in as Intern!");
-      return;
-    }
-
-    // ✅ Store token after login
-    localStorage.setItem("auth", JSON.stringify({ token, role }));
-
-    // ✅ Redirect
-    navigate(role === "admin" ? "/admin/home" : "/intern/home");
-  } catch (err) {
-    alert(err.response?.data?.message || "Login failed");
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
+  };
 
   return (
     <div className="min-h-screen flex bg-white">
@@ -80,11 +77,6 @@ const LoginPage = () => {
                 alt={`Slide ${index + 1}`}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0  bg-opacity-40 flex items-center justify-center">
-                <h1 className="text-white text-4xl font-bold text-center px-8">
-                  Welcome to Softgrowth Infotech
-                </h1>
-              </div>
             </div>
           ))}
         </div>
@@ -108,10 +100,11 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Softgrowth Infotech
+            <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-gray-800 to-blue-600 dark:from-white dark:to-blue-200 bg-clip-text text-transparent mb-2">
+              Welcome to Softgrowth Infotech
             </h1>
-            <p className="text-gray-600">
+
+            <p className="text-gray-800 font-bold text-2xl">
               {isAdmin ? "Admin Portal" : "Intern Portal"}
             </p>
           </div>
@@ -145,7 +138,10 @@ const LoginPage = () => {
             {/* Login Form */}
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email
                 </label>
                 <input
@@ -160,7 +156,10 @@ const LoginPage = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Password
                 </label>
                 <input
@@ -193,15 +192,13 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
-
-      
-            
           </div>
 
           {/* Footer */}
           <div className="text-center mt-8">
             <p className="text-gray-500 text-sm">
-              &copy; {new Date().getFullYear()} Softgrowth Infotech. All rights reserved.
+              &copy; {new Date().getFullYear()} Softgrowth Infotech. All rights
+              reserved.
             </p>
           </div>
         </div>
