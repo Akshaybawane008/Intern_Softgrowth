@@ -245,10 +245,11 @@ const Task = () => {
           <div>
             <Root>
               <div {...getRootProps()}>
-                <Label className="flex items-center gap-2 mb-3">
-                  <PersonIcon fontSize="small" />
-                  Assign to Students
-                </Label>
+              <Label className="flex items-center gap-2 mb-3">
+  <PersonIcon fontSize="small" className="flex-shrink-0 text-gray-500 dark:text-gray-200" />
+  <span className="text-gray-500 ml-1 dark:text-gray-200">Assign to Students</span>
+</Label>
+
                 <InputWrapper ref={setAnchorEl} className={focused ? "focused" : ""}>
                   {value.map((option, index) => (
                     <Tag key={index} {...getTagProps({ index })}>
@@ -287,8 +288,8 @@ const Task = () => {
           {/* Task Description */}
           <div>
             <Label className="flex items-center gap-2 mb-3">
-              <AssignmentIcon fontSize="small" />
-              Task Description
+              <AssignmentIcon fontSize="small" className="text-gray-500 dark:text-gray-200" />
+              <span className="text-gray-500 dark:text-gray-200 ml-1">Task Description</span>
             </Label>
             <textarea
               rows="4"
@@ -304,8 +305,8 @@ const Task = () => {
           {/* File Attachment */}
           <div>
             <Label className="flex items-center gap-2 mb-3">
-              <AttachmentIcon fontSize="small" />
-              Attachments
+              <AttachmentIcon fontSize="small" className="text-gray-500 dark:text-gray-200" />
+              <span className="text-gray-500 ml-1 dark:text-gray-200">Attachments</span>
             </Label>
             <input
               type="file"
@@ -318,8 +319,8 @@ const Task = () => {
           {/* Remark */}
           <div>
             <Label className="flex items-center gap-2 mb-3">
-              <CommentIcon fontSize="small" />
-              Remarks
+              <CommentIcon fontSize="small" className="text-gray-500 dark:text-gray-200" />
+              <span className="text-gray-500 ml-1 dark:text-gray-200">Remarks</span>
             </Label>
             <input
               type="text"
@@ -334,8 +335,8 @@ const Task = () => {
           {/* Deadline */}
           <div>
             <Label className="flex items-center gap-2 mb-3">
-              <EventIcon fontSize="small" />
-              Deadline
+              <EventIcon fontSize="small" className="text-gray-500 dark:text-gray-200" />
+              <span className="text-gray-500 ml-1 dark:text-gray-200">Deadline</span>
             </Label>
             <input
               type="date"
@@ -352,7 +353,7 @@ const Task = () => {
           type="submit"
           className="w-full py-4 px-6 mt-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 text-base"
         >
-          <AddIcon fontSize="medium" />
+          <AddIcon fontSize="medium" className="text-gray-500 dark:text-gray-200" />
           Create Task
         </button>
       </form>
