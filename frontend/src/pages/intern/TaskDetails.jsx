@@ -145,7 +145,7 @@ function TaskDetails() {
                       <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Assigned To</p>
                         <p className="font-medium text-gray-900 dark:text-white">
-                          {task.assignedTo?.[0]?.name} {task.assignedTo?.[0]?.lastName || "Not assigned"}
+                          {task.assignedTo?.map(user => `${user.name} ${user.lastName}`).join(", ") }
                         </p>
                       </div>
                     </div>

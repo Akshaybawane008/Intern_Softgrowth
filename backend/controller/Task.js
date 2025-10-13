@@ -9,7 +9,7 @@ import { Task } from "../model/Task.js";
 export const createTask = async (req, res) => {
   try {
     const { assignedTo, assignTask, remark, deadline } = req.body;
-
+       
     let attachments = [];
     if (req.files && req.files.attachments) {
       const files = Array.isArray(req.files.attachments)
@@ -24,9 +24,10 @@ export const createTask = async (req, res) => {
         attachments.push(`/assets/img/${file.name}`);
       });
     }
-
+   const assignedToMany = assignedTo.split(',').map(id => id.trim()); // Convert to array of ObjectIds
+   console.log("Assigned To IDs:", assignedToMany);
     const task = await Task.create({
-      assignedTo,
+      assignedTo : assignedToMany,
       assignTask,
       attachments, // now stores URLs like "/assets/img/xyz.png"
       remark,
@@ -70,8 +71,11 @@ export const updateTaskById = async (req, res) => {
   try {
     const id = req.params.id;
     console.log("your task id :", id);
-    console.log("request body:", req.body);
-
+    console.log("updated request body:", req.body);
+    const { assignedTo } = req.body;
+    if (assignedTo) {
+      req.body.assignedTo = assignedTo.split(',').map(id => id.trim());
+    }
     const updatetask = await Task.findByIdAndUpdate(
       id,
       req.body,
