@@ -209,7 +209,7 @@ function TaskDetails() {
                               <img
                                 src={`http://localhost:4000${file}`}
                                 alt={`attachment-${index}`}
-                                className="w-full h-48 object-contain rounded-md mb-3 transition-transform group-hover:scale-105"
+                                className="w-full h-100 object-contain rounded-md mb-3 transition-transform"
                               />
                               <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">
