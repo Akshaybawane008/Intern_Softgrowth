@@ -227,7 +227,7 @@ const TaskTable = () => {
 
         {/* Tasks Table with Borders */}
         <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto hidden lg:block">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
@@ -375,7 +375,81 @@ const TaskTable = () => {
                 )}
               </tbody>
             </table>
+  
+
           </div>
+                    {/* Mobile Card View */}
+<div className="block   lg:hidden ">
+  {filteredTasks.length > 0 ? (
+    filteredTasks.map((task) => (
+      <div
+            key={task._id}
+            className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 mb-4 gap"
+      >
+        <div className="mb-3 ">
+          <p className="text-xs font-semibold text-gray-500">Task</p>
+          <p className="text-gray-900 dark:text-white font-medium">
+            {task.assignTask || "Untitled Task"}
+          </p>
+        </div>
+
+        <div className="mb-3">
+          <p className="text-xs font-semibold text-gray-500">Assigned To</p>
+          {task.assignedTo?.length > 0 ? (
+            <p className="text-gray-900 dark:text-white">
+              {task.assignedTo.map(u => `${u.name} ${u.lastName}`).join(", ")}
+            </p>
+          ) : (
+            <p className="text-gray-500">Not Assigned</p>
+          )}
+        </div>
+
+        <div className="mb-3">
+          <p className="text-xs font-semibold text-gray-500">Deadline</p>
+          <p className="text-gray-900 dark:text-white">
+            {task.deadline
+              ? new Date(task.deadline).toLocaleDateString()
+              : "No deadline"}
+          </p>
+        </div>
+
+        <div className="mb-3">
+          <p className="text-xs font-semibold text-gray-500">Status</p>
+          <span
+            className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(task.statusbar)}`}
+          >
+            {task.statusbar || "Not Started"}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 mt-2">
+          <button
+            onClick={() => navigate(`/admin/task/${task._id}`)}
+            className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded border border-blue-200 dark:border-blue-800 transition"
+          >
+            <Visibility />
+          </button>
+          <button
+            onClick={() => navigate(`/admin/update/task/${task._id}`)}
+            className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded border border-green-200 dark:border-green-800 transition"
+          >
+            <Edit />
+          </button>
+          <button
+            onClick={() => handleDelete(task._id)}
+            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded border border-red-200 dark:border-red-800 transition"
+          >
+            <Delete />
+          </button>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-center text-gray-500 dark:text-gray-400 py-6">
+      No tasks found
+    </p>
+  )}
+</div>
         </div>
 
         {/* Footer Info */}
