@@ -65,7 +65,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`${
-          isOpen ? "w-72" : "w-20"
+          isOpen ? "w-72" : "w-21"
         } fixed top-0 left-0 h-screen bg-gradient-to-b from-white to-gray-100 dark:from-slate-800 dark:to-gray-900 text-gray-800 dark:text-white transition-all duration-500 ease-in-out p-4 flex flex-col justify-between shadow-2xl z-50 border-r border-gray-200 dark:border-gray-700`}
       >
         {/* Top Section */}
@@ -74,7 +74,7 @@ const Sidebar = () => {
           <div className={`flex items-center ${isOpen ? "justify-between" : "justify-center"} mb-8`}>
             {isOpen ? (
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div className={`${isOpen ?"w-10 h-10":"w-5 h-5"} rounded-full bg-gradient-to-r from-blue-500 to-purple-600  flex items-center justify-center shadow-lg`}>
                   <Building size={24} className="text-white" />
                 </div>
                 <div>

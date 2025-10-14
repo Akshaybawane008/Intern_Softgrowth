@@ -226,7 +226,7 @@ const TaskTable = () => {
         </div>
 
         {/* Tasks Table with Borders */}
-        <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
+        <div className=" lg:dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden">
           <div className="overflow-x-auto hidden lg:block">
             <table className="w-full border-collapse">
               <thead>
