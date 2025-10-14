@@ -167,7 +167,7 @@ const Records = () => {
           </div>
 
           {/* Records Table Container */}
-          <div className="w-full overflow-hidden">
+          <div className="w-full overflow-hidden hidden lg:block">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
@@ -323,8 +323,79 @@ const Records = () => {
                   </tbody>
                 </table>
               </div>
+
             </div>
           </div>
+          {/* Mobile Card View for Intern Records */}
+<div className="block lg:hidden">
+  {currentRecords.length > 0 ? (
+    currentRecords.map((rec) => (
+      <div
+        key={rec._id}
+        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 mb-4 shadow-sm"
+      >
+        {/* Personal Info */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Intern Name</p>
+          <p className="text-gray-900 dark:text-white font-medium">
+            {rec.name} {rec.middleName} {rec.lastName}
+          </p>
+        </div>
+
+        <div className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+          <div>DOB: {rec.dob ? new Date(rec.dob).toLocaleDateString() : "No DOB"}</div>
+          {rec.address && <div>Address: {rec.address}</div>}
+        </div>
+
+        {/* Contact Details */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Contact</p>
+          {rec.email && <div className="text-gray-900 dark:text-white text-sm">Email: {rec.email}</div>}
+          {rec.mobile && <div className="text-gray-900 dark:text-white text-sm">Mobile: {rec.mobile}</div>}
+        </div>
+
+        {/* Education & Duration */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Education</p>
+          {rec.college && <div className="text-gray-900 dark:text-white text-sm">College: {rec.college}</div>}
+          {rec.durationStart && rec.durationEnd && (
+            <div className="text-gray-900 dark:text-white text-sm">
+              Duration: {new Date(rec.durationStart).toLocaleDateString()} → {new Date(rec.durationEnd).toLocaleDateString()}
+            </div>
+          )}
+        </div>
+
+        {/* Identification */}
+        {rec.aadhar && (
+          <div className="mb-2">
+            <p className="text-xs font-semibold text-gray-500">Aadhar</p>
+            <p className="text-gray-900 dark:text-white text-sm font-mono">{rec.aadhar}</p>
+          </div>
+        )}
+
+        {/* Actions - Full Buttons */}
+        <div className="flex flex-col gap-2 mt-3">
+          <button
+            onClick={() => navigate(`/admin/update/${rec._id}`)}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => handleDelete(rec)}
+            className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-center text-gray-500 dark:text-gray-400 py-6">No intern records found</p>
+  )}
+</div>
+
+          
 
           {/* Pagination */}
           {totalPages > 1 && (
