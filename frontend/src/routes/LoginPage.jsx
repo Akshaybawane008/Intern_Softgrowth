@@ -100,7 +100,7 @@ const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-gray-800 to-blue-600 dark:from-white dark:to-blue-200 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold text-center bg-gradient-to-r from-gray-800 to-blue-600 bg-clip-text text-transparent mb-2">
               Welcome to Softgrowth Infotech
             </h1>
 

@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Filter, ChevronLeft, ChevronRight, Eye, CheckCircle2, Download, User } from "lucide-react";
+import {
+  Search,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  CheckCircle2,
+  Download,
+  User,
+} from "lucide-react";
 
 const PassoutIntern = ({ tasks }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,7 +27,9 @@ const PassoutIntern = ({ tasks }) => {
           task.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           task.assignTask?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           task.assignedTo?.some((u) =>
-            `${u.name} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+            `${u.name} ${u.lastName}`
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
           )
       );
     setFilteredTasks(filtered);
@@ -27,7 +38,10 @@ const PassoutIntern = ({ tasks }) => {
   // Pagination
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredTasks.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = filteredTasks.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
   const totalPages = Math.ceil(filteredTasks.length / recordsPerPage);
 
   return (
@@ -100,7 +114,9 @@ const PassoutIntern = ({ tasks }) => {
           {currentRecords.length === 0 ? (
             <div className="text-center py-8">
               <CheckCircle2 className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">No completed tasks found</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No completed tasks found
+              </p>
               <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
                 All completed tasks will appear here
               </p>
@@ -108,7 +124,10 @@ const PassoutIntern = ({ tasks }) => {
           ) : (
             <div className="space-y-3 p-3">
               {currentRecords.map((task, i) => (
-                <div key={task._id || i} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 space-y-3">
+                <div
+                  key={task._id || i}
+                  className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 space-y-3"
+                >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
@@ -131,17 +150,23 @@ const PassoutIntern = ({ tasks }) => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                       <User className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600 dark:text-gray-400">Assigned to:</span>
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Assigned to:
+                      </span>
                       <span className="text-gray-900 dark:text-white font-medium">
                         {task.assignedTo && task.assignedTo.length > 0
-                          ? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                          ? task.assignedTo
+                              .map((user) => `${user.name} ${user.lastName}`)
+                              .join(", ")
                           : "Unassigned"}
                       </span>
                     </div>
 
                     <div className="flex justify-between text-sm">
                       <div>
-                        <span className="text-gray-600 dark:text-gray-400">Due Date: </span>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          Due Date:{" "}
+                        </span>
                         <span className="text-gray-900 dark:text-white">
                           {task.deadline
                             ? new Date(task.deadline).toLocaleDateString()
@@ -152,7 +177,9 @@ const PassoutIntern = ({ tasks }) => {
 
                     {task.attachments && task.attachments.length > 0 && (
                       <div className="text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Attachments: </span>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          Attachments:{" "}
+                        </span>
                         <div className="mt-1 space-y-1">
                           {task.attachments.map((file, idx) => (
                             <a
@@ -180,7 +207,9 @@ const PassoutIntern = ({ tasks }) => {
           {currentRecords.length === 0 ? (
             <div className="text-center py-8">
               <CheckCircle2 className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">No completed tasks found</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No completed tasks found
+              </p>
               <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
                 All completed tasks will appear here
               </p>
@@ -214,7 +243,10 @@ const PassoutIntern = ({ tasks }) => {
               </thead>
               <tbody>
                 {currentRecords.map((task, i) => (
-                  <tr key={task._id || i} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                  <tr
+                    key={task._id || i}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
                     <td className="border border-gray-300 dark:border-gray-600 p-3 text-gray-900 dark:text-white text-sm">
                       {indexOfFirstRecord + i + 1}
                     </td>
@@ -223,7 +255,9 @@ const PassoutIntern = ({ tasks }) => {
                         <User className="w-4 h-4 text-gray-400" />
                         <span>
                           {task.assignedTo && task.assignedTo.length > 0
-                            ? task.assignedTo.map((user) => `${user.name} ${user.lastName}`).join(", ")
+                            ? task.assignedTo
+                                .map((user) => `${user.name} ${user.lastName}`)
+                                .join(", ")
                             : "-"}
                         </span>
                       </div>
@@ -283,13 +317,16 @@ const PassoutIntern = ({ tasks }) => {
           <div className="border-t border-gray-200 dark:border-gray-600 p-3">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
               <div className="text-xs text-gray-600 dark:text-gray-400">
-                Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredTasks.length)} of{" "}
+                Showing {indexOfFirstRecord + 1} to{" "}
+                {Math.min(indexOfLastRecord, filteredTasks.length)} of{" "}
                 {filteredTasks.length} completed tasks
               </div>
-              
+
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
                   disabled={currentPage === 1}
                   className="p-1.5 border border-gray-300 dark:border-gray-600 rounded 
                            bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 
@@ -329,7 +366,9 @@ const PassoutIntern = ({ tasks }) => {
                 </div>
 
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
                   disabled={currentPage === totalPages}
                   className="p-1.5 border border-gray-300 dark:border-gray-600 rounded 
                            bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 
