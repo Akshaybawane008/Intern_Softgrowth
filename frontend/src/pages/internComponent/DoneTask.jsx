@@ -100,7 +100,7 @@ const IntenRecord = () => {
 
       {/* Tasks Table */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto hidden lg:block">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -254,6 +254,118 @@ const IntenRecord = () => {
             </tbody>
           </table>
         </div>
+        {/* Mobile Card View for Completed Tasks */}
+<div className="block lg:hidden">
+  {filteredTasks.length > 0 ? (
+    filteredTasks.map((task, index) => (
+      <div
+        key={task._id || index}
+        className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 mb-4 shadow-sm"
+      >
+        {/* Task # */}
+        <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+          <span className="font-semibold">#{index + 1}</span>
+        </div>
+
+        {/* Student */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Student</p>
+          {task.assignedTo && task.assignedTo.length > 0 ? (
+            <div className="text-sm text-gray-900 dark:text-white">
+              {task.assignedTo.map((user) => (
+                <div key={user._id} className="flex items-center gap-2 mb-1 last:mb-0">
+                  <div className="w-6 h-6 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                    <User size={12} className="text-green-600 dark:text-green-400" />
+                  </div>
+                  <span>{user.name} {user.lastName}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <span className="text-gray-500 text-sm">-</span>
+          )}
+        </div>
+
+        {/* Task Description */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Task Description</p>
+          <p className="text-sm text-gray-900 dark:text-white">{task.assignTask || "-"}</p>
+        </div>
+
+        {/* Attachments */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Attachments</p>
+          {task.attachments && task.attachments.length > 0 ? (
+            <div className="space-y-1">
+              {task.attachments.map((file, i) => (
+                <a
+                  key={i}
+                  href={file}
+                  download
+                  className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors p-1 rounded"
+                >
+                  <Download size={14} />
+                  <span className="truncate max-w-xs">{file.split("/").pop()}</span>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <span className="text-gray-500 text-sm">-</span>
+          )}
+        </div>
+
+        {/* Remarks */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Remarks</p>
+          <p className="text-sm text-gray-900 dark:text-white">{task.remark || "-"}</p>
+        </div>
+
+        {/* Deadline */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Deadline</p>
+          <p className="text-sm text-gray-900 dark:text-white">
+            {task.deadline ? new Date(task.deadline).toLocaleDateString() : "-"}
+          </p>
+        </div>
+
+        {/* Status */}
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-gray-500">Status</p>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800">
+            <CheckCircle size={12} className="mr-1" />
+            Completed
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-3">
+          <button
+            onClick={() => navigate(`/intern/task/${task._id}`)}
+            className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium flex items-center justify-center gap-2"
+          >
+            <Eye size={16} />
+            View Details
+          </button>
+        </div>
+      </div>
+    ))
+  ) : (
+    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+      <CheckCircle size={48} className="mx-auto mb-4 opacity-50" />
+      <h3 className="text-lg font-semibold mb-2">No completed tasks found</h3>
+      <p>{searchTerm ? "No completed tasks match your search criteria" : "You haven't completed any tasks yet"}</p>
+      {searchTerm && (
+        <button
+          onClick={() => setSearchTerm("")}
+          className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          Clear Search
+        </button>
+      )}
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   );
