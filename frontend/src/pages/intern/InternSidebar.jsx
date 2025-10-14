@@ -83,7 +83,7 @@ const InternSidebar = () => {
       {/* Sidebar */}
       <div
         className={`
-          ${isOpen ? "w-64" : "w-20"}
+          ${isOpen ? "w-64" : "w-24"}
           fixed top-0 left-0 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 
           flex flex-col justify-between transition-all duration-300 z-50
           shadow-lg
@@ -98,7 +98,7 @@ const InternSidebar = () => {
                   <img
                     src={`https://ui-avatars.com/api/?name=${user?.name}+${user?.lastName}&background=3B82F6&color=ffffff&bold=true&size=128`}
                     alt="Profile"
-                    className="w-10 h-10 rounded-xl border-2 border-blue-200 dark:border-blue-800 shadow-sm"
+                    className={`${isOpen ? "w-10 h-10": "w-8 h-8"} rounded-full border-2 border-blue-200 dark:border-blue-800 shadow-sm`}
                   />
                   <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
                 </div>
