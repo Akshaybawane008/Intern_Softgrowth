@@ -65,37 +65,44 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`${
-          isOpen ? "w-72" : "w-21"
+          isOpen ? "w-72" : "w-22"
         } fixed top-0 left-0 h-screen bg-gradient-to-b from-white to-gray-100 dark:from-slate-800 dark:to-gray-900 text-gray-800 dark:text-white transition-all duration-500 ease-in-out p-4 flex flex-col justify-between shadow-2xl z-50 border-r border-gray-200 dark:border-gray-700`}
       >
         {/* Top Section */}
         <div>
-          {/* Logo Section */}
-          <div className={`flex items-center ${isOpen ? "justify-between" : "justify-center"} mb-8`}>
-            {isOpen ? (
-              <div className="flex items-center gap-3">
-                <div className={`${isOpen ?"w-10 h-10":"w-5 h-5"} rounded-full bg-gradient-to-r from-blue-500 to-purple-600  flex items-center justify-center shadow-lg`}>
-                  <Building size={24} className="text-white" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 dark:from-white dark:to-blue-200 bg-clip-text text-transparent">
-                    Softgrowth
-                  </h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Admin Panel</p>
-                </div>
-              </div>
-            ) : (
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Building size={24} className="text-white" />
-              </div>
-            )}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-xl bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl text-gray-600 dark:text-gray-300"
-            >
-              {isOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-            </button>
-          </div>
+        {/* Logo Section */}
+<div className={`flex items-center ${isOpen ? "justify-between" : "justify-center"} mb-8`}>
+  {isOpen ? (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 sm:w-10 md:w-12 lg:w-14 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+        <Building 
+          size={24} 
+          className="sm:text-[28px] md:text-[32px] lg:text-[36px] text-white" 
+        />
+      </div>
+      <div>
+        <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 dark:from-white dark:to-blue-200 bg-clip-text text-transparent">
+          Softgrowth
+        </h2>
+        <p className="text-[10px] sm:text-xs md:text-sm lg:text-base text-gray-500 dark:text-gray-400">
+          Admin Panel
+        </p>
+      </div>
+    </div>
+  ) : (
+    <div className="w-7 h-7 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+      <Building size={18} className="text-white" />
+    </div>
+  )}
+
+  <button
+    onClick={() => setIsOpen(!isOpen)}
+    className={` ${isOpen ? "p-2" : "p-[1px]"}  ml-3 rounded-xl bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl text-gray-600 dark:text-gray-300`}
+  >
+    {isOpen ? <ChevronLeft size={18} /> : <ChevronRight size={15} />}
+  </button>
+</div>
+
 
           {/* Navigation Menu */}
           <nav className="space-y-2">
