@@ -103,7 +103,7 @@ const InternHome = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div 
             onClick={() => setActiveTab("assigned")} 
-            className="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            className="cursor-pointer transform transition-all duration-300 lg:hover:scale-105 hover:shadow-lg"
           >
             <StatCard
               label="New Tasks"
@@ -123,7 +123,7 @@ const InternHome = () => {
 
           <div 
             onClick={() => setActiveTab("pending")} 
-            className="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            className="cursor-pointer transform transition-all duration-300 lg:hover:scale-105 hover:shadow-lg"
           >
             <StatCard
               label="In Progress"
@@ -143,7 +143,7 @@ const InternHome = () => {
 
           <div 
             onClick={() => setActiveTab("done")} 
-            className="cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            className="cursor-pointer transform transition-all duration-300 lg:hover:scale-105 hover:shadow-lg"
           >
             <StatCard
               label="Completed"
