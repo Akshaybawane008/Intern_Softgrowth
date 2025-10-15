@@ -185,7 +185,7 @@ function TaskDetails() {
               {/* Right Column - Attachments */}
               <div>
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 h-full">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-white dark:text-white mb-4 flex items-center gap-2">
                     <Download size={20} />
                     Attachments
                     {task.attachments && task.attachments.length > 0 && (
@@ -195,39 +195,56 @@ function TaskDetails() {
                     )}
                   </h3>
 
-                  {task.attachments && task.attachments.length > 0 ? (
-                    <div className="space-y-4">
-                      {task.attachments.map((file, index) => (
-                        <div key={index} className="group">
-                          <a
-                            href={`http://localhost:4000${file}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block"
-                          >
-                            <div className="bg-white dark:bg-gray-600 rounded-lg border border-gray-200 dark:border-gray-500 p-4 hover:shadow-md transition-all duration-200 group-hover:border-blue-300 dark:group-hover:border-blue-600">
-                              <img
-                                src={`http://localhost:4000${file}`}
-                                alt={`attachment-${index}`}
-                                className="w-full h-100 object-contain rounded-md mb-3 transition-transform"
-                              />
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">
-                                  {file.split("/").pop()}
-                                </span>
-                                <Download size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2" />
-                              </div>
-                            </div>
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <FileText size={48} className="text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-500 dark:text-gray-400">No attachments available</p>
-                    </div>
-                  )}
+                {task.attachments && task.attachments.length > 0 ? (
+  <div className="space-y-4">
+    {task.attachments.map((file, index) => {
+      const fileUrl = `http://localhost:4000${file}`;
+      const fileName = file.split("/").pop();
+      const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(fileName); // ✅ Check if image file
+
+      return (
+        <div key={index} className="group">
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <div className="bg-white dark:bg-gray-600 rounded-lg border border-gray-200 dark:border-gray-500 p-4 hover:shadow-md transition-all duration-200 group-hover:border-blue-300 dark:group-hover:border-blue-600">
+
+              {/* ✅ If the file is image show <img>, otherwise show icon */}
+              {isImage ? (
+                <img
+                  src={fileUrl}
+                  alt={`attachment-${index}`}
+                  className="w-full h-100 object-contain rounded-md mb-3 transition-transform"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-24 mb-3 bg-gray-100 dark:bg-gray-700 rounded-md">
+                  <FileText size={36} className="text-gray-500 dark:text-gray-300" />
+                </div>
+              )}
+
+              {/* ✅ File name + Download icon */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-gray-300 truncate flex-1">
+                  {fileName}
+                </span>
+                <Download size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2" />
+              </div>
+            </div>
+          </a>
+        </div>
+      );
+    })}
+  </div>
+) : (
+  <div className="text-center py-8">
+    <FileText size={48} className="text-gray-400 mx-auto mb-3" />
+    <p className="text-gray-500 dark:text-gray-400">No attachments available</p>
+  </div>
+)}
+
                 </div>
               </div>
             </div>
