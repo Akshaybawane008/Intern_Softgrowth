@@ -1,5 +1,5 @@
 import express from "express"
-import bodyParser from "express";
+import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import userRoutes from "./Routes/user.js"
 import taskRoutes from "./Routes/Task.js"
@@ -29,7 +29,7 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 const port = 4000;
 
 // mongodb database connection
-mongoose.connect("mongodb+srv://jrsahil24:ECG7sbLpbFnWigbv@cluster0.1rd532c.mongodb.net/",
+mongoose.connect("mongodb+srv://jrsahil24_db_user:MzXofG2cvAmOGs6D@cluster0.ldfequw.mongodb.net/",
     { dbName: "intern_Task_management" }
 ).then(() => console.log("mongo db connected successfully")).catch((error) => console.log(error = error.message));
 
