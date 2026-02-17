@@ -41,7 +41,7 @@ const TaskTable = () => {
 
     setLoading(true);
     axios
-      .get("http://localhost:4000/api/intern/tasks", {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/intern/tasks`, {
         headers: { auth: token },
       })
       .then((response) => {
@@ -68,7 +68,7 @@ const TaskTable = () => {
         return;
       }
 
-      await axios.delete(`http://localhost:4000/api/intern/task/${taskId}`, {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/intern/task/${taskId}`, {
         headers: { auth: token },
       });
 

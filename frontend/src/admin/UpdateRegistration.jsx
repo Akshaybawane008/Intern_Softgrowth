@@ -43,7 +43,7 @@ function UpdateRegistration() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/users/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -75,7 +75,7 @@ function UpdateRegistration() {
   const handleUpdate = async () => {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/users/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", auth: token },
         body: JSON.stringify(formData),

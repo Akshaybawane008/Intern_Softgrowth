@@ -32,7 +32,7 @@ const UpdateTask = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users`);
         const data = await response.json();
         const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
         setStudents(sortedData);
@@ -50,7 +50,7 @@ const UpdateTask = () => {
         const parsed = authData ? JSON.parse(authData) : null;
         const token = parsed?.token;
 
-        const res = await fetch(`http://localhost:4000/api/intern/task/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/intern/task/${id}`, {
           headers: { auth: token },
         });
         const data = await res.json();
@@ -118,7 +118,7 @@ const UpdateTask = () => {
       const parsed = authData ? JSON.parse(authData) : null;
       const token = parsed?.token;
 
-      const response = await fetch(`http://localhost:4000/api/intern/task/update/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/intern/task/update/${id}`, {
         method: "PUT",
         body: formData,
         headers: { auth: token },
@@ -287,7 +287,7 @@ const UpdateTask = () => {
                         <div className="flex items-center gap-2">
                           <Attachment className="text-gray-400 text-sm" />
                           <a
-                            href={`http://localhost:4000/uploads/${file}`}
+                            href={`${import.meta.env.VITE_BACKEND_URL}/uploads/${file}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 dark:text-blue-400 hover:underline text-sm"

@@ -20,7 +20,7 @@ const IntenRecord = () => {
     }
 
     axios
-      .get("http://localhost:4000/api/intern/assignedtasks", {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/intern/assignedtasks`, {
         headers: { auth: token },
       })
       .then((response) => {

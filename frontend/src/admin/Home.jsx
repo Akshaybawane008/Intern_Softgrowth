@@ -28,14 +28,14 @@ const Home = () => {
     }
 
     axios
-      .get("http://localhost:4000/api/users", {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/users`, {
         headers: { auth: token },
       })
       .then((response) => setRecords(response.data))
       .catch(() => navigate("/login"));
 
     axios
-      .get("http://localhost:4000/api/intern/tasks", {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/intern/tasks`, {
         headers: { auth: token },
       })
       .then((response) => {

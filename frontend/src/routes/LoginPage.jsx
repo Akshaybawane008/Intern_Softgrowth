@@ -25,7 +25,7 @@ const LoginPage = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/users/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
         { email, password }, // ✅ No token sent here
         { headers: { "Content-Type": "application/json" } }
       );

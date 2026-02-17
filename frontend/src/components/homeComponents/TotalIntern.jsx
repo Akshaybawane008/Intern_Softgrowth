@@ -18,7 +18,7 @@ const TotalIntern = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users`, {
           headers: { auth: token },
         });
         const data = await response.json();
@@ -38,7 +38,7 @@ const TotalIntern = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${rec._id}`, {
         headers: { auth: token },
         method: "DELETE",
       });

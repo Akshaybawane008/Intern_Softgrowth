@@ -58,7 +58,7 @@ const InternSidebar = () => {
     }
 
     axios
-      .get("http://localhost:4000/api/users/profile/me", {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/me`, {
         headers: { auth: token },
       })
       .then((response) => {

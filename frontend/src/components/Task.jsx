@@ -139,7 +139,7 @@ const Task = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/users");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users`);
         const data = await response.json();
         const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
         setStudents(sortedData);
@@ -198,7 +198,7 @@ const Task = () => {
       const parsed = authData ? JSON.parse(authData) : null;
       const token = parsed?.token;
 
-      const response = await fetch("http://localhost:4000/api/intern/task", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/intern/task`, {
         method: "POST",
         body: formData,
         headers: { auth: token },

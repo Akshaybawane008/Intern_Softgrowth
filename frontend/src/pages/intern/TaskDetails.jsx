@@ -17,7 +17,7 @@ function TaskDetails() {
     if (!token) return;
 
     axios
-      .get(`http://localhost:4000/api/intern/task/${id}`, {
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/intern/task/${id}`, {
         headers: { auth: token },
       })
       .then((response) => {
@@ -37,7 +37,7 @@ function TaskDetails() {
 
     axios
       .put(
-        `http://localhost:4000/api/intern/task/update/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/intern/task/update/${id}`,
         { statusbar: newStatus },
         { headers: { auth: token } }
       )
@@ -198,7 +198,7 @@ function TaskDetails() {
                 {task.attachments && task.attachments.length > 0 ? (
   <div className="space-y-4">
     {task.attachments.map((file, index) => {
-      const fileUrl = `http://localhost:4000${file}`;
+      const fileUrl = `${import.meta.env.VITE_BACKEND_URL}${file}`;
       const fileName = file.split("/").pop();
       const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(fileName); // ✅ Check if image file
 

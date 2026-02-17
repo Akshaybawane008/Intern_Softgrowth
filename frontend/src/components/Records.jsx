@@ -31,7 +31,7 @@ const Records = () => {
   const fetchRecords = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:4000/api/users");
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users`);
       const data = await response.json();
       setRecords(data);
       setLoading(false);
@@ -45,7 +45,7 @@ const Records = () => {
     if (!window.confirm(`Are you sure you want to delete ${rec.name} ${rec.lastName}?`)) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/api/users/${rec._id}`, { method: "DELETE" });
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${rec._id}`, { method: "DELETE" });
       if (response.ok) {
         setRecords((prev) => prev.filter((r) => r._id !== rec._id));
       } else {
