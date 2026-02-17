@@ -39,6 +39,7 @@ const Home = () => {
         headers: { auth: token },
       })
       .then((response) => {
+
         setTasks(response.data.tasks || []);
         setLoading(false);
       })
