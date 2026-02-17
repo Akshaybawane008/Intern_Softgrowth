@@ -71,8 +71,7 @@ export const getAllTask = async (req, res) => {
 export const updateTaskById = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("your task id :", id);
-    console.log("updated request body:", req.body);
+   
     const { assignedTo } = req.body;
     if (assignedTo) {
       req.body.assignedTo = assignedTo.split(',').map(id => id.trim());
