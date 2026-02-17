@@ -216,13 +216,13 @@ const Sidebar = () => {
         {/* Content Container */}
         <div className="relative z-10">
           <Routes>
-            <Route path="/" element={<Navigate to="home" replace />} />
-            <Route path="home" element={<HomePage />} />
-            <Route path="registration" element={<Registrationform />} />
-            <Route path="taskrecords" element={<TaskRecord />} />
-            <Route path="records" element={<Records />} />
-            <Route path="task" element={<Task />} />
-            <Route path="task/:id" element={<TaskDetails />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/registration" element={<Registrationform />} />
+            <Route path="/taskrecords" element={<TaskRecord />} />
+            <Route path="/records" element={<Records />} />
+            <Route path="/task" element={<Task />} />
+            <Route path="/task/:id" element={<TaskDetails />} />
             <Route path="/update/:id" element={<UpdateRegistraion />} />
             <Route path="/update/task/:id" element={<UpdateTask />} />
           </Routes>
