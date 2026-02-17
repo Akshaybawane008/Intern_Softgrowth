@@ -49,6 +49,7 @@ export const createTask = async (req, res) => {
 // api/intern/tasks
 export const getAllTask = async (req, res) => {
   
+  
   try {
     let tasks = await Task.find().populate("assignedTo");
     if (tasks.length === 0) {

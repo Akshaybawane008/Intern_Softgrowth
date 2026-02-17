@@ -187,7 +187,7 @@ export const loginUser = async (req, res) => {
 
     let valid = await bcrypt.compare(password, user.password)
     if (!valid) return res.json({ message: "invalid password", success: false })
-    let token = jwt.sign({ user: user._id }, "$%%^%#$#", {
+    let token = jwt.sign({ user: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1d"
     })
     res.json({ message: `hello ${user.name} you successfully log in`, success: true, token, role: user.role })

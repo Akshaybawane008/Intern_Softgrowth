@@ -12,7 +12,7 @@ export const isauthenticated = async (req, res, next) => {
 
   try {
     // verify token
-    const decoded = jwt.verify(token, "$%%^%#$#");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // console.log("decoded token =", decoded);
 
     // 👇 IMPORTANT: extract the id field
